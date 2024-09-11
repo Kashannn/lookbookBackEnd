@@ -1,21 +1,31 @@
 import 'dart:io';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:lookbook/utils/validations/validator.dart';
+import 'package:path/path.dart';
+
+import '../Firebase/firebase_addproduct_services.dart';
+import '../Model/AddProductModel/add_product_model.dart';
 
 class AddProductController extends GetxController {
+  final FirebaseAddProductServices addProductServices =
+      FirebaseAddProductServices();
+  final RxList<Color> selectedColors = <Color>[].obs;
+  final RxString selectedSize = ''.obs;
   final categoryController = TextEditingController();
   final dressController = TextEditingController();
   final priceController = TextEditingController();
   final descriptionController = TextEditingController();
-  final colorController = TextEditingController();
-  final sizeController = TextEditingController();
   final quantityController = TextEditingController();
   final socialController = TextEditingController();
   final phoneController = TextEditingController();
   final emailController = TextEditingController();
+  final colorController = TextEditingController();
+  final sizeController = TextEditingController();
 
   final isButtonActive = false.obs;
   final RxString _emailErrorText = ''.obs;
@@ -23,8 +33,8 @@ class AddProductController extends GetxController {
   final RxString _categoryErrorText = ''.obs;
   final RxString _descriptionErrorText = ''.obs;
   final RxString _priceErrorText = ''.obs;
+  final RxString selectedImagePath = ''.obs;
   final List<File> selectedImages = <File>[].obs;
-  final List<Color> selectedColors = <Color>[].obs;
 
   final FocusNode categoryFocusNode = FocusNode();
   final FocusNode dressFocusNode = FocusNode();
@@ -39,11 +49,16 @@ class AddProductController extends GetxController {
 
   Color pickerColor = Colors.blue;
 
-  String? get emailErrorText => _emailErrorText.value.isEmpty ? null : _emailErrorText.value;
-  String? get phoneErrorText => _phoneErrorText.value.isEmpty ? null : _phoneErrorText.value;
-  String? get categoryErrorText => _categoryErrorText.value.isEmpty ? null : _categoryErrorText.value;
-  String? get descriptionErrorText => _descriptionErrorText.value.isEmpty ? null : _descriptionErrorText.value;
-  String? get priceErrorText => _priceErrorText.value.isEmpty ? null : _priceErrorText.value;
+  String? get emailErrorText =>
+      _emailErrorText.value.isEmpty ? null : _emailErrorText.value;
+  String? get phoneErrorText =>
+      _phoneErrorText.value.isEmpty ? null : _phoneErrorText.value;
+  String? get categoryErrorText =>
+      _categoryErrorText.value.isEmpty ? null : _categoryErrorText.value;
+  String? get descriptionErrorText =>
+      _descriptionErrorText.value.isEmpty ? null : _descriptionErrorText.value;
+  String? get priceErrorText =>
+      _priceErrorText.value.isEmpty ? null : _priceErrorText.value;
 
   @override
   void onInit() {
@@ -83,15 +98,39 @@ class AddProductController extends GetxController {
   }
 
   Future<void> pickImage() async {
-    if (selectedImages.length < 5) {
-      final picker = ImagePicker();
-      final pickedFile = await picker.pickImage(source: ImageSource.gallery);
-      if (pickedFile != null) {
-        selectedImages.add(File(pickedFile.path));
-        _validateForm();
+    final picker = ImagePicker();
+    final pickedFiles = await picker.pickMultiImage();
+    if (pickedFiles != null && pickedFiles.isNotEmpty) {
+      int remainingSlots = 5 - selectedImages.length;
+      if (pickedFiles.length > remainingSlots) {
+        Get.snackbar(
+            'Limit Reached', 'You can only select a total of 5 images.');
+        for (var i = 0; i < remainingSlots; i++) {
+          selectedImages.add(File(pickedFiles[i].path));
+        }
+      } else {
+        for (var pickedFile in pickedFiles) {
+          selectedImages.add(File(pickedFile.path));
+        }
       }
-    } else {
-      Get.snackbar('Limit Reached', 'You can only upload 5 images.');
+    }
+    _validateForm();
+  }
+
+  Future<String> uploadImageToFirebase(String imagePath) async {
+    File file = File(imagePath);
+    String fileName = basename(file.path);
+
+    try {
+      Reference firebaseStorageRef =
+          FirebaseStorage.instance.ref().child('Products/$fileName');
+      UploadTask uploadTask = firebaseStorageRef.putFile(file);
+      TaskSnapshot taskSnapshot = await uploadTask;
+      String downloadURL = await taskSnapshot.ref.getDownloadURL();
+      return downloadURL;
+    } catch (e) {
+      print('Error uploading image: $e');
+      throw Exception('Error uploading image');
     }
   }
 
@@ -134,6 +173,38 @@ class AddProductController extends GetxController {
     );
   }
 
+  Future<void> saveProductData() async {
+    try {
+      List<String> imageUrls = [];
+      for (var image in selectedImages) {
+        String imageUrl = await uploadImageToFirebase(image.path);
+        imageUrls.add(imageUrl);
+      }
+      final AddProductModel product = AddProductModel(
+        userId: FirebaseAuth.instance.currentUser!.uid,
+        category: [categoryController.text],
+        dressTitle: dressController.text,
+        price: priceController.text,
+        productDescription: descriptionController.text,
+        colors: selectedColors
+            .map((color) => color.value.toRadixString(16))
+            .toList(),
+        sizes: [selectedSize.value],
+        minimumOrderQuantity: quantityController.text,
+        instagramLinks: [socialController.text],
+        images: imageUrls,
+        phone: phoneController.text,
+        email: emailController.text,
+      );
+
+      await addProductServices.saveProduct(product);
+
+      Get.snackbar('Success', 'Product saved successfully!');
+    } catch (e) {
+      Get.snackbar('Error', 'Failed to save product: $e');
+    }
+  }
+
   @override
   void onClose() {
     categoryController.dispose();
@@ -141,8 +212,6 @@ class AddProductController extends GetxController {
     dressController.dispose();
     priceController.dispose();
     descriptionController.dispose();
-    colorController.dispose();
-    sizeController.dispose();
     quantityController.dispose();
     socialController.dispose();
     phoneController.dispose();

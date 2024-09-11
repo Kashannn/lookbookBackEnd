@@ -149,229 +149,256 @@ class _AllBuyerCustomerScreenState extends State<AllBuyerCustomerScreen> {
                     ],
                   ),
                 ),
-                10.ph,
-                SizedBox(
-                  height: 78.h,
-                  child: InkWell(
-                    onTap: () {
-                      Get.to(() => const MessageReportScreen());
-                    },
-                    child: Material(
-                      elevation: 1,
-                      borderRadius: BorderRadius.circular(10.r),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: AppColors.white,
-                          borderRadius: BorderRadius.circular(10.r),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Row(
-                                children: [
-                                  CircleAvatar(
-                                    radius: 30.0.r,
-                                    backgroundColor: Colors.transparent,
-                                    child: ClipOval(
-                                      child: Image.asset(
-                                        AppImages.noti,
-                                        fit: BoxFit.cover,
-                                        width: 60.0.w,
-                                        height: 60.0.h,
-                                      ),
-                                    ),
-                                  ),
-                                  15.pw,
-                                  Column(
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        10.ph,
+                        SizedBox(
+                          height: 78.h,
+                          child: InkWell(
+                            onTap: () {
+                              Get.to(() => const MessageReportScreen());
+                            },
+                            child: Material(
+                              elevation: 1,
+                              borderRadius: BorderRadius.circular(10.r),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: AppColors.white,
+                                  borderRadius: BorderRadius.circular(10.r),
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    mainAxisAlignment: MainAxisAlignment.center,
+                                        CrossAxisAlignment.center,
                                     children: [
-                                      Text(
-                                        'Jhone  Lane (Designer)',
-                                        style: iStyleBlack13700.copyWith(
-                                          color: AppColors.text3,
-                                        ),
+                                      Row(
+                                        children: [
+                                          CircleAvatar(
+                                            radius: 30.0.r,
+                                            backgroundColor: Colors.transparent,
+                                            child: ClipOval(
+                                              child: Image.asset(
+                                                AppImages.noti,
+                                                fit: BoxFit.cover,
+                                                width: 60.0.w,
+                                                height: 60.0.h,
+                                              ),
+                                            ),
+                                          ),
+                                          15.pw,
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Text(
+                                                'Jhone  Lane (Designer)',
+                                                style:
+                                                    iStyleBlack13700.copyWith(
+                                                  color: AppColors.text3,
+                                                ),
+                                              ),
+                                              Text(
+                                                '+49 40 60774609',
+                                                style:
+                                                    iStyleBlack15400.copyWith(
+                                                  color: AppColors.text2,
+                                                  decoration:
+                                                      TextDecoration.underline,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
                                       ),
-                                      Text(
-                                        '+49 40 60774609',
-                                        style: iStyleBlack15400.copyWith(
-                                          color: AppColors.text2,
-                                          decoration: TextDecoration.underline,
-                                        ),
-                                      ),
+                                      Icon(
+                                        Icons.arrow_forward_outlined,
+                                        size: 25.sp,
+                                        color: Color(0xFFE47F46),
+                                      )
                                     ],
                                   ),
-                                ],
-                              ),
-                              Icon(
-                                Icons.arrow_forward_outlined,
-                                size: 25.sp,
-                                color: Color(0xFFE47F46),
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                30.ph,
-                SizedBox(
-                  height: 78.h,
-                  child: InkWell(
-                    onTap: () {
-                      // Get.to(() => const MessageReportScreen());
-                    },
-                    child: Material(
-                      elevation: 1,
-                      borderRadius: BorderRadius.circular(10.r),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: AppColors.counterColor2.withOpacity(0.2),
-                          borderRadius: BorderRadius.circular(10.r),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Row(
-                                children: [
-                                  CircleAvatar(
-                                    radius: 30.0.r,
-                                    backgroundColor: Colors.transparent,
-                                    child: ClipOval(
-                                      child: Image.asset(
-                                        AppImages.noti,
-                                        fit: BoxFit.cover,
-                                        width: 60.0.w,
-                                        height: 60.0.h,
-                                      ),
-                                    ),
-                                  ),
-                                  10.pw,
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        'Jhone  Lane (Designer)',
-                                        style: iStyleBlack13700.copyWith(
-                                          color: AppColors.text3,
-                                        ),
-                                      ),
-                                      Text(
-                                        '+49 40 60774609',
-                                        style: iStyleBlack15400.copyWith(
-                                          color: AppColors.text2,
-                                          decoration: TextDecoration.underline,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                              SizedBox(
-                                height: 40.h,
-                                width: 117.w,
-                                child: ElevatedButton(
-                                  onPressed: () {
-                                    showCustomDialog(context,
-                                        title: 'Sure you want to Unblock?',
-                                        message:
-                                            'Are you sure you want to unblock this?');
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: AppColors.red,
-                                    foregroundColor: AppColors.white,
-                                  ),
-                                  child: Text('Unblock',
-                                      style: tSStyleBlack14400.copyWith(color: AppColors.white)),
                                 ),
                               ),
-                            ],
+                            ),
                           ),
                         ),
-                      ),
-                    ),
-                  ),
-                ),
-                30.ph,
-                SizedBox(
-                  height: 78.h,
-                  child: InkWell(
-                    onTap: () {
-                      Get.to(() => const ReportScreen());
-                    },
-                    child: Material(
-                      elevation: 1,
-                      borderRadius: BorderRadius.circular(10.r),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: AppColors.white,
-                          borderRadius: BorderRadius.circular(10.r),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Row(
-                                children: [
-                                  CircleAvatar(
-                                    radius: 30.0.r,
-                                    backgroundColor: Colors.transparent,
-                                    child: ClipOval(
-                                      child: Image.asset(
-                                        AppImages.noti,
-                                        fit: BoxFit.cover,
-                                        width: 60.0.w,
-                                        height: 60.0.h,
-                                      ),
-                                    ),
-                                  ),
-                                  15.pw,
-                                  Column(
+                        30.ph,
+                        SizedBox(
+                          height: 78.h,
+                          child: InkWell(
+                            onTap: () {},
+                            child: Material(
+                              elevation: 1,
+                              borderRadius: BorderRadius.circular(10.r),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color:
+                                      AppColors.counterColor2.withOpacity(0.2),
+                                  borderRadius: BorderRadius.circular(10.r),
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    mainAxisAlignment: MainAxisAlignment.center,
+                                        CrossAxisAlignment.center,
                                     children: [
-                                      Text(
-                                        'Kashan Ashraf (Customer)',
-                                        style: iStyleBlack13700.copyWith(
-                                          color: AppColors.text3,
-                                        ),
+                                      Row(
+                                        children: [
+                                          CircleAvatar(
+                                            radius: 30.0.r,
+                                            backgroundColor: Colors.transparent,
+                                            child: ClipOval(
+                                              child: Image.asset(
+                                                AppImages.noti,
+                                                fit: BoxFit.cover,
+                                                width: 60.0.w,
+                                                height: 60.0.h,
+                                              ),
+                                            ),
+                                          ),
+                                          10.pw,
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Text(
+                                                'Jhone  Lane (Designer)',
+                                                style:
+                                                    iStyleBlack13700.copyWith(
+                                                  color: AppColors.text3,
+                                                ),
+                                              ),
+                                              Text(
+                                                '+49 40 60774609',
+                                                style:
+                                                    iStyleBlack15400.copyWith(
+                                                  color: AppColors.text2,
+                                                  decoration:
+                                                      TextDecoration.underline,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
                                       ),
-                                      Text(
-                                        '03054294420',
-                                        style: iStyleBlack15400.copyWith(
-                                          color: AppColors.text2,
-                                          decoration: TextDecoration.underline,
+                                      SizedBox(
+                                        height: 40.h,
+                                        width: 117.w,
+                                        child: ElevatedButton(
+                                          onPressed: () {
+                                            showCustomDialog(context,
+                                                title:
+                                                    'Sure you want to Unblock?',
+                                                message:
+                                                    'Are you sure you want to unblock this?');
+                                          },
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: AppColors.red,
+                                            foregroundColor: AppColors.white,
+                                          ),
+                                          child: Text('Unblock',
+                                              style: tSStyleBlack14400.copyWith(
+                                                  color: AppColors.white)),
                                         ),
                                       ),
                                     ],
                                   ),
-                                ],
+                                ),
                               ),
-                              Icon(
-                                Icons.arrow_forward_outlined,
-                                size: 25.sp,
-                                color: Color(0xFFE47F46),
-                              )
-                            ],
+                            ),
                           ),
                         ),
-                      ),
+                        30.ph,
+                        SizedBox(
+                          height: 78.h,
+                          child: InkWell(
+                            onTap: () {
+                              Get.to(() => const ReportScreen());
+                            },
+                            child: Material(
+                              elevation: 1,
+                              borderRadius: BorderRadius.circular(10.r),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: AppColors.white,
+                                  borderRadius: BorderRadius.circular(10.r),
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          CircleAvatar(
+                                            radius: 30.0.r,
+                                            backgroundColor: Colors.transparent,
+                                            child: ClipOval(
+                                              child: Image.asset(
+                                                AppImages.noti,
+                                                fit: BoxFit.cover,
+                                                width: 60.0.w,
+                                                height: 60.0.h,
+                                              ),
+                                            ),
+                                          ),
+                                          15.pw,
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Text(
+                                                'Kashan Ashraf (Customer)',
+                                                style:
+                                                    iStyleBlack13700.copyWith(
+                                                  color: AppColors.text3,
+                                                ),
+                                              ),
+                                              Text(
+                                                '03054294420',
+                                                style:
+                                                    iStyleBlack15400.copyWith(
+                                                  color: AppColors.text2,
+                                                  decoration:
+                                                      TextDecoration.underline,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                      Icon(
+                                        Icons.arrow_forward_outlined,
+                                        size: 25.sp,
+                                        color: Color(0xFFE47F46),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ),
+                )
               ],
             ),
           ),

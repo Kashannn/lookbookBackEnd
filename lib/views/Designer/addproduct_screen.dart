@@ -34,7 +34,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                   Center(
                     child: Text(
                       'ADD PRODUCT',
-                      style: tSStyleBlack18400,
+                      style: tSStyleBlack18600,
                     ),
                   ),
                   Center(

@@ -2,20 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+import '../../controllers/add_product_controller.dart';
 import 'constant/app_colors.dart';
 import 'constant/app_textstyle.dart';
 
 class ColorPickerWidget extends StatefulWidget {
+  final AddProductController controller;
+
+  ColorPickerWidget({required this.controller});
+
   @override
   _ColorPickerWidgetState createState() => _ColorPickerWidgetState();
 }
 
 class _ColorPickerWidgetState extends State<ColorPickerWidget> {
-  List<Color> selectedColors = [
-    AppColors.secondary,
-    AppColors.primaryColor,
-    AppColors.red,
-  ];
   Color pickerColor = Colors.blue;
 
   @override
@@ -38,19 +40,18 @@ class _ColorPickerWidgetState extends State<ColorPickerWidget> {
           ),
           child: Row(
             children: [
-              ...selectedColors.map((color) => Padding(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
-                    child: Container(
-                      width: 25.w,
-                      height: 25.h,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: color,
-                        border: Border.all(color: AppColors.secondary),
-                      ),
-                    ),
-                  )),
+              ...widget.controller.selectedColors.map((color) => Padding(
+                padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
+                child: Container(
+                  width: 25.w,
+                  height: 25.h,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: color,
+                    border: Border.all(color: AppColors.secondary),
+                  ),
+                ),
+              )),
               GestureDetector(
                 onTap: () {
                   showDialog(
@@ -72,7 +73,7 @@ class _ColorPickerWidgetState extends State<ColorPickerWidget> {
                           child: const Text('Select'),
                           onPressed: () {
                             setState(() {
-                              selectedColors.add(pickerColor);
+                              widget.controller.selectedColors.add(pickerColor);
                             });
                             Navigator.of(context).pop();
                           },
@@ -104,3 +105,4 @@ class _ColorPickerWidgetState extends State<ColorPickerWidget> {
     );
   }
 }
+

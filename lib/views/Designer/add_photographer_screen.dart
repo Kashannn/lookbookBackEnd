@@ -220,7 +220,11 @@ class AddPhotographerScreen extends StatelessWidget {
                       ? Column(
                           children: [
                             Button(
-                              ontap: () {},
+                              ontap: () {
+                                controller.savePhotographerDetails(
+
+                                );
+                              },
                               text: 'SAVE',
                               textcolor: AppColors.white,
                               bgColor: AppColors.secondary,
@@ -258,7 +262,6 @@ class AddPhotographerScreen extends StatelessWidget {
   }
 }
 
-// ignore: must_be_immutable
 class Button extends StatelessWidget {
   String text;
   Color textcolor;

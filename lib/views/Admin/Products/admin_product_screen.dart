@@ -78,7 +78,38 @@ class _AdminProductScreenState extends State<AdminProductScreen> {
                                 },
                               ),
                               ProductCard(
+                                imagePath: AppImages.splash1,
+                                title: '21WN Reversible Ring',
+                                subtitle: 'Cardigan',
+                                price: '\$120',
+                                onTap: () {
+                                  Get.toNamed('RemoveProductScreen',
+                                      arguments: {
+                                        'title': '21WN Reversible Ring',
+                                        'price': '\$120',
+                                      });
+                                },
+                              ),
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              ProductCard(
                                 imagePath: AppImages.photographer,
+                                title: '21WN Reversible Ring',
+                                subtitle: 'Cardigan',
+                                price: '\$120',
+                                onTap: () {
+                                  Get.toNamed('RemoveProductScreen',
+                                      arguments: {
+                                        'title': '21WN Reversible Ring',
+                                        'price': '\$120',
+                                      });
+                                },
+                              ),
+                              ProductCard(
+                                imagePath: AppImages.splash1,
                                 title: '21WN Reversible Ring',
                                 subtitle: 'Cardigan',
                                 price: '\$120',
@@ -119,6 +150,37 @@ class _AdminProductScreenState extends State<AdminProductScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              ProductCard(
+                                imagePath: AppImages.splash,
+                                title: '21WN Reversible Ring',
+                                subtitle: 'Cardigan',
+                                price: '\$120',
+                                onTap: () {
+                                  Get.toNamed('RemoveProductScreen',
+                                      arguments: {
+                                        'title': '21WN Reversible Ring',
+                                        'price': '\$120',
+                                      });
+                                },
+                              ),
+                              ProductCard(
+                                imagePath: AppImages.splash1,
+                                title: '21WN Reversible Ring',
+                                subtitle: 'Cardigan',
+                                price: '\$120',
+                                onTap: () {
+                                  Get.toNamed('RemoveProductScreen',
+                                      arguments: {
+                                        'title': '21WN Reversible Ring',
+                                        'price': '\$120',
+                                      });
+                                },
+                              ),
+                            ],
+                          ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [

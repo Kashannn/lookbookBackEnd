@@ -67,7 +67,6 @@ class _MessageReportScreenState extends State<MessageReportScreen> {
                               AppImages.noti,
                               fit: BoxFit.cover,
                               width: 60.0.w,
-                              height: 60.0.h,
                             ),
                           ),
                         ),
@@ -90,7 +89,7 @@ class _MessageReportScreenState extends State<MessageReportScreen> {
                         ),
                         child: Padding(
                           padding: EdgeInsets.symmetric(
-                              horizontal: 15.w, vertical: 10.h),
+                              horizontal: 15.w, vertical: 5.h),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [

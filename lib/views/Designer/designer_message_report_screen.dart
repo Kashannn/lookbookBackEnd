@@ -51,117 +51,119 @@ class _DesignerMessageReportScreenState
             Expanded(
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: 20.w),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(left: 10.w),
-                      child: Container(
-                        height: 40.h,
-                        width: 90.w,
-                        decoration: BoxDecoration(
-                            color: AppColors.counterColor,
-                            borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(10.r),
-                              topRight: Radius.circular(10.r),
-                            )),
-                        child: Center(
-                          child: Text(
-                            'Report',
-                            style: tSStyleBlack14400.copyWith(
-                                color: AppColors.primaryColor),
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(left: 10.w),
+                        child: Container(
+                          height: 40.h,
+                          width: 90.w,
+                          decoration: BoxDecoration(
+                              color: AppColors.counterColor,
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(10.r),
+                                topRight: Radius.circular(10.r),
+                              )),
+                          child: Center(
+                            child: Text(
+                              'Report',
+                              style: tSStyleBlack14400.copyWith(
+                                  color: AppColors.primaryColor),
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    Container(
-                      width: 260.w,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(20.r),
-                          topRight: Radius.circular(20.r),
-                          bottomRight: Radius.circular(20.r),
+                      Container(
+                        width: 260.w,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(20.r),
+                            topRight: Radius.circular(20.r),
+                            bottomRight: Radius.circular(20.r),
+                          ),
+                          color: Color(0xFFDADADA),
                         ),
-                        color: Color(0xFFDADADA),
-                      ),
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 15.w, vertical: 10.h),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Brooke',
-                              style: TextStyle(
-                                fontFamily: 'Inter',
-                                fontWeight: FontWeight.w700,
-                                fontSize: 12.sp,
-                                color: Color(0xFF71727A),
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 15.w, vertical: 10.h),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Brooke',
+                                style: TextStyle(
+                                  fontFamily: 'Inter',
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 12.sp,
+                                  color: Color(0xFF71727A),
+                                ),
                               ),
-                            ),
-                            SizedBox(height: 2.h),
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: Text(
-                                    'No worries. Let me know if you need any help 😉',
-                                    style: TextStyle(
-                                      fontFamily: 'Inter',
-                                      fontSize: 14.sp,
-                                      fontWeight: FontWeight.w400,
-                                      color: Color(0xFF6E6E6E),
+                              SizedBox(height: 2.h),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      'No worries. Let me know if you need any help 😉',
+                                      style: TextStyle(
+                                        fontFamily: 'Inter',
+                                        fontSize: 14.sp,
+                                        fontWeight: FontWeight.w400,
+                                        color: Color(0xFF6E6E6E),
+                                      ),
                                     ),
                                   ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    30.ph,
-                    Container(
-                      height: 155.h,
-                      decoration: BoxDecoration(
-                        color: AppColors.counterColor,
-                        borderRadius: BorderRadius.circular(10.r),
-                      ),
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 15.w),
-                        child: Column(
-                          children: [
-                            TextField(
-                              decoration: InputDecoration(
-                                hintText: 'Type Reason',
-                                hintStyle: tSStyleBlack14600.copyWith(
-                                  color: AppColors.primaryColor,
-                                ),
-                                border: InputBorder.none,
-                                contentPadding: EdgeInsets.symmetric(),
+                                ],
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                    50.ph,
-                    SizedBox(
-                      width: 177.w,
-                      height: 42.h,
-                      child: reusedButton(
-                        text: 'REPORT',
-                        ontap: () {
-                          showCustomDialog(context,
-                              title: 'Sure you want to report?',
-                              message: 'Are you sure you want to report this?');
-                        },
-                        color: AppColors.red,
-                        icon: Icons.east,
+                      30.ph,
+                      Container(
+                        height: 155.h,
+                        decoration: BoxDecoration(
+                          color: AppColors.counterColor,
+                          borderRadius: BorderRadius.circular(10.r),
+                        ),
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 15.w),
+                          child: Column(
+                            children: [
+                              TextField(
+                                decoration: InputDecoration(
+                                  hintText: 'Type Reason',
+                                  hintStyle: tSStyleBlack14600.copyWith(
+                                    color: AppColors.primaryColor,
+                                  ),
+                                  border: InputBorder.none,
+                                  contentPadding: EdgeInsets.symmetric(),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
-                    ),
-                    10.ph,
-                  ],
+                      50.ph,
+                      SizedBox(
+                        width: 177.w,
+                        height: 42.h,
+                        child: reusedButton(
+                          text: 'REPORT',
+                          ontap: () {
+                            showCustomDialog(context,
+                                title: 'Sure you want to report?',
+                                message: 'Are you sure you want to report this?');
+                          },
+                          color: AppColors.red,
+                          icon: Icons.east,
+                        ),
+                      ),
+                      10.ph,
+                    ],
+                  ),
                 ),
               ),
             ),

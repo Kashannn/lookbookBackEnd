@@ -91,14 +91,14 @@ class _AdminProfileScreenState extends State<AdminProfileScreen> {
                                   return controller.isUpdating.value
                                       ? CircularProgressIndicator()
                                       : SizedBox(
-                                    child: reusedButton2(
-                                      text: 'UPDATE',
-                                      ontap: () {
-                                        controller.updateUserData();
-                                      },
-                                      color: AppColors.secondary,
-                                    ),
-                                  );
+                                          child: reusedButton2(
+                                            text: 'UPDATE',
+                                            ontap: () {
+                                              controller.updateUserData();
+                                            },
+                                            color: AppColors.secondary,
+                                          ),
+                                        );
                                 }),
                                 30.ph,
                               ],
@@ -113,44 +113,32 @@ class _AdminProfileScreenState extends State<AdminProfileScreen> {
                         child: Obx(() {
                           return controller.isLoading.value
                               ? Shimmer.fromColors(
-                            baseColor: Colors.grey[300]!,
-                            highlightColor: Colors.grey[100]!,
-                            child: CircleAvatar(
-                              radius: 60.0.r,
-                              backgroundColor: Colors.grey,
-                            ),
-                          )
+                                  baseColor: Colors.grey[300]!,
+                                  highlightColor: Colors.grey[100]!,
+                                  child: CircleAvatar(
+                                    radius: 60.0.r,
+                                    backgroundColor: Colors.grey,
+                                  ),
+                                )
                               : Center(
-                            child: CircleAvatar(
-                              radius: 60.0.r,
-                              backgroundColor:
-                              AppColors.secondary.withOpacity(0.5),
-                              backgroundImage:
-                              controller.profileImageUrl != null &&
-                                  controller
-                                      .profileImageUrl!.isNotEmpty
-                                  ? NetworkImage(
-                                  controller.profileImageUrl!)
-                                  : null,
-                              child: controller.profileImageUrl == null ||
-                                  controller.profileImageUrl!.isEmpty
-                                  ? Text(
-                                controller.nameController.text
-                                    .isNotEmpty
-                                    ? controller.getInitials(
-                                    controller
-                                        .nameController.text)
-                                    : 'N/A',
-                                style: TextStyle(
-                                  fontSize: 24.0.sp,
-                                  color: AppColors.white,
-                                  fontWeight: FontWeight
-                                      .bold, // Make initials bold
-                                ),
-                              )
-                                  : null,
-                            ),
-                          );
+                                  child: CircleAvatar(
+                                    radius: 60.0.r,
+                                    backgroundColor:
+                                        AppColors.secondary.withOpacity(0.5),
+                                    backgroundImage:
+                                        controller.profileImageUrl != null &&
+                                                controller
+                                                    .profileImageUrl!.isNotEmpty
+                                            ? NetworkImage(
+                                                controller.profileImageUrl!)
+                                            : AssetImage(AppImages.profile)
+                                                as ImageProvider,
+                                    child: controller.profileImageUrl == null ||
+                                            controller.profileImageUrl!.isEmpty
+                                        ? null
+                                        : null,
+                                  ),
+                                );
                         }),
                       ),
 
@@ -170,13 +158,10 @@ class _AdminProfileScreenState extends State<AdminProfileScreen> {
                                 height: 35.0.h,
                                 width: 35.0.w,
                                 AppImages.UpdateProfileIcon,
-                                color: AppColors.profileIcon
-                            ),
+                                color: AppColors.profileIcon),
                             onPressed: () {
                               controller.uploadProfilePicture();
                             },
-
-
                           ),
                         ),
                       ),

@@ -133,23 +133,11 @@ class _CustomerProfileScreenState extends State<CustomerProfileScreen> {
                                                     .profileImageUrl!.isNotEmpty
                                             ? NetworkImage(
                                                 controller.profileImageUrl!)
-                                            : null,
+                                            : AssetImage(AppImages.profile)
+                                                as ImageProvider,
                                     child: controller.profileImageUrl == null ||
                                             controller.profileImageUrl!.isEmpty
-                                        ? Text(
-                                            controller.nameController.text
-                                                    .isNotEmpty
-                                                ? controller.getInitials(
-                                                    controller
-                                                        .nameController.text)
-                                                : 'N/A',
-                                            style: TextStyle(
-                                              fontSize: 24.0.sp,
-                                              color: AppColors.white,
-                                              fontWeight: FontWeight
-                                                  .bold, // Make initials bold
-                                            ),
-                                          )
+                                        ? null
                                         : null,
                                   ),
                                 );
@@ -172,13 +160,10 @@ class _CustomerProfileScreenState extends State<CustomerProfileScreen> {
                                 height: 35.0.h,
                                 width: 35.0.w,
                                 AppImages.UpdateProfileIcon,
-                                color: AppColors.profileIcon
-                            ),
+                                color: AppColors.profileIcon),
                             onPressed: () {
                               controller.uploadProfilePicture();
                             },
-
-
                           ),
                         ),
                       ),

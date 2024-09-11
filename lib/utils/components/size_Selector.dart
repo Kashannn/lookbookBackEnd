@@ -5,13 +5,19 @@ import 'package:lookbook/extension/sizebox_extension.dart';
 import 'package:lookbook/utils/components/constant/app_colors.dart';
 import 'package:lookbook/utils/components/constant/app_textstyle.dart';
 
+import '../../controllers/add_product_controller.dart';
+
 class SizeSelector extends StatefulWidget {
+  final AddProductController controller;
+
+  SizeSelector({required this.controller});
+
   @override
   _SizeSelectorState createState() => _SizeSelectorState();
 }
 
 class _SizeSelectorState extends State<SizeSelector> {
-  String selectedSize = 'S'; // Default selected size
+  String selectedSize = 'S';
 
   @override
   Widget build(BuildContext context) {
@@ -52,6 +58,7 @@ class _SizeSelectorState extends State<SizeSelector> {
       onTap: () {
         setState(() {
           selectedSize = size;
+          widget.controller.selectedSize.value = size;
         });
       },
       child: Container(
@@ -71,3 +78,4 @@ class _SizeSelectorState extends State<SizeSelector> {
     );
   }
 }
+

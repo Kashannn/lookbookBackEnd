@@ -1,7 +1,15 @@
+import 'dart:io';
+
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:lookbook/utils/validations/validator.dart';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:path/path.dart';
+
+import '../Model/AddProductModel/add_photographer_model.dart';
 
 class AddPhotographerController extends GetxController {
   final nameController = TextEditingController();
@@ -48,7 +56,55 @@ class AddPhotographerController extends GetxController {
     if (pickedFile != null) {
       selectedImagePath.value = pickedFile.path;
     }
-    _validateForm(); // Revalidate form after image selection
+    _validateForm();
+  }
+
+  Future<String> uploadImageToFirebase(String imagePath) async {
+    File file = File(imagePath);
+    String fileName = basename(file.path);
+
+    try {
+      Reference firebaseStorageRef =
+          FirebaseStorage.instance.ref().child('photographers/$fileName');
+      UploadTask uploadTask = firebaseStorageRef.putFile(file);
+      TaskSnapshot taskSnapshot = await uploadTask;
+      String downloadURL =
+          await taskSnapshot.ref.getDownloadURL(); // Get the URL after upload
+      return downloadURL;
+    } catch (e) {
+      print('Error uploading image: $e');
+      throw Exception('Error uploading image');
+    }
+  }
+
+  Future<void> savePhotographerDetails() async {
+    try {
+      String imageUrl = await uploadImageToFirebase(selectedImagePath.value);
+      final photographer = AddPhotographerModel(
+        name: nameController.text,
+        image: imageUrl,
+        email: emailController.text,
+        phone: phoneController.text,
+        socialLinks: [socialController.text],
+      );
+      await FirebaseFirestore.instance
+          .collection('photographers')
+          .add(photographer.toMap());
+
+      clearForm();
+      Get.snackbar('Success', 'Photographer details added successfully!');
+    } catch (e) {
+      Get.snackbar('Error', 'Failed to add photographer details: $e');
+    }
+  }
+
+  void clearForm() {
+    nameController.clear();
+    socialController.clear();
+    phoneController.clear();
+    emailController.clear();
+    selectedImagePath.value = '';
+    isFormComplete.value = false;
   }
 
   @override

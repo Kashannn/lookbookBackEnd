@@ -51,51 +51,56 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
               ),
             ),
             20.ph,
-            SizedBox(
-              height: 584.h,
-              width: 336.w,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  CustomCard(
-                    logoPath: AppImages.designersLogo,
-                    title: 'Designers',
-                    onPressed: () {
-                      Get.to(() => const AllUserScreen());
-                    },
+            Expanded(
+                child: SingleChildScrollView(
+              child: Column(children: [
+                SizedBox(
+                  height: 584.h,
+                  width: 336.w,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      CustomCard(
+                        logoPath: AppImages.designersLogo,
+                        title: 'Designers',
+                        onPressed: () {
+                          Get.to(() => const AllUserScreen());
+                        },
+                      ),
+                      CustomCard(
+                        logoPath: AppImages.customersLogo,
+                        title: 'Customers',
+                        onPressed: () {
+                          Get.to(() => const AllCustomersScreen());
+                        },
+                      ),
+                      CustomCard(
+                        logoPath: AppImages.productsLogo,
+                        title: 'Products',
+                        onPressed: () {
+                          Get.to(() => const AdminProductScreen());
+                        },
+                      ),
+                      CustomCard(
+                        logoPath: AppImages.reportsLogo,
+                        title: 'Reports',
+                        onPressed: () {
+                          Get.to(() => const AllBuyerCustomerScreen());
+                        },
+                      ),
+                      CustomCard(
+                        logoPath: AppImages.conversationsLogo,
+                        title: 'Conversations',
+                        onPressed: () {
+                          Get.to(() => const AdminAllConversationScreen());
+                        },
+                      ),
+                      20.ph,
+                    ],
                   ),
-                  CustomCard(
-                    logoPath: AppImages.customersLogo,
-                    title: 'Customers',
-                    onPressed: () {
-                      Get.to(() => const AllCustomersScreen());
-                    },
-                  ),
-                  CustomCard(
-                    logoPath: AppImages.productsLogo,
-                    title: 'Products',
-                    onPressed: () {
-                      Get.to(() => const AdminProductScreen());
-                    },
-                  ),
-                  CustomCard(
-                    logoPath: AppImages.reportsLogo,
-                    title: 'Reports',
-                    onPressed: () {
-                      Get.to(() => const AllBuyerCustomerScreen());
-                    },
-                  ),
-                  CustomCard(
-                    logoPath: AppImages.conversationsLogo,
-                    title: 'Conversations',
-                    onPressed: () {
-                      Get.to(() => const AdminAllConversationScreen());
-                    },
-                  ),
-                  20.ph,
-                ],
-              ),
-            )
+                )
+              ]),
+            ))
           ],
         ),
       ),

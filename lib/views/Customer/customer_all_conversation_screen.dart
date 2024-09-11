@@ -54,71 +54,81 @@ class _CustomerAllConversationScreenState
               child: CustomSearchBar(),
             ),
             20.ph,
-            SizedBox(
-              width: 385.w,
-              height: 78.h,
-              child: InkWell(
-                onTap: () {
-                  Get.to(() => const CustomerMessageChatScreen());
-                },
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10.r),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Row(
-                          children: [
-                            CircleAvatar(
-                              radius: 30.0.r,
-                              backgroundColor: Colors.transparent,
-                              child: ClipOval(
-                                child: Image.asset(
-                                  AppImages.noti,
-                                  fit: BoxFit.cover,
-                                  width: 60.0.w,
-                                  height: 60.0.h,
-                                ),
-                              ),
-                            ),
-                            15.pw,
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.center,
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    SizedBox(
+                      width: 385.w,
+                      height: 78.h,
+                      child: InkWell(
+                        onTap: () {
+                          Get.to(() => const CustomerMessageChatScreen());
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10.r),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                Text(
-                                  'Jhone  Lane ',
-                                  style: iStyleBlack13700.copyWith(
-                                    color: AppColors.text3,
-                                  ),
+                                Row(
+                                  children: [
+                                    CircleAvatar(
+                                      radius: 30.0.r,
+                                      backgroundColor: Colors.transparent,
+                                      child: ClipOval(
+                                        child: Image.asset(
+                                          AppImages.noti,
+                                          fit: BoxFit.cover,
+                                          width: 60.0.w,
+                                          height: 60.0.h,
+                                        ),
+                                      ),
+                                    ),
+                                    15.pw,
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          'Jhone  Lane ',
+                                          style: iStyleBlack13700.copyWith(
+                                            color: AppColors.text3,
+                                          ),
+                                        ),
+                                        Text(
+                                          'Stand up for what you believe in',
+                                          style: iStyleBlack13500.copyWith(
+                                            color: AppColors.text2,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
                                 ),
-                                Text(
-                                  'Stand up for what you believe in',
-                                  style: iStyleBlack13500.copyWith(
-                                    color: AppColors.text2,
+                                CircleAvatar(
+                                  radius: 15.0.r,
+                                  backgroundColor: AppColors.secondary,
+                                  child: Text(
+                                    '9',
+                                    style: oStyleBlack14300.copyWith(
+                                      color: AppColors.white,
+                                    ),
                                   ),
-                                ),
+                                )
                               ],
                             ),
-                          ],
-                        ),
-                        CircleAvatar(
-                          radius: 15.0.r,
-                          backgroundColor: AppColors.secondary,
-                          child: Text(
-                            '9',
-                            style: oStyleBlack14300.copyWith(
-                              color: AppColors.white,
-                            ),
                           ),
-                        )
-                      ],
+                        ),
+                      ),
                     ),
-                  ),
+                  ],
                 ),
               ),
             )

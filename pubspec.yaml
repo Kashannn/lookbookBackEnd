@@ -54,6 +54,7 @@ dependencies:
   shimmer: ^3.0.0
   calendar_date_picker2: ^1.1.6
   table_calendar: ^3.0.4
+  path: ^1.8.0
 
 dev_dependencies:
   flutter_test:
