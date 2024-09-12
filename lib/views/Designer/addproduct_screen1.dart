@@ -16,6 +16,7 @@ import '../../utils/components/colorPicker.dart';
 import '../../utils/components/constant/app_colors.dart';
 import '../../utils/components/constant/app_images.dart';
 import '../../utils/components/size_Selector.dart';
+import '../designer/add_photographer_screen.dart';
 
 class AddproductScreen1 extends StatelessWidget {
   AddproductScreen1({super.key});
@@ -464,8 +465,13 @@ class AddproductScreen1 extends StatelessWidget {
                             text: 'NEXT',
                             ontap: controller.isButtonActive.value
                                 ? () async {
-                                    await controller.saveProductData();
-                                    Get.toNamed('addPhotographer');
+                              String? productID =await controller.saveProductData();
+
+                                    Get.to(
+                                      () =>  AddPhotographerScreen(
+                                        productId: productID!,
+                                      ),
+                                    );
                                   }
                                 : null,
                             color: controller.isButtonActive.value

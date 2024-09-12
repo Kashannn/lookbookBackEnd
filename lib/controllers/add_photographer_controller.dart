@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -28,6 +29,10 @@ class AddPhotographerController extends GetxController {
 
   String? get emailErrorText =>
       _emailErrorText.value.isEmpty ? null : _emailErrorText.value;
+
+  String get currentUserId {
+    return FirebaseAuth.instance.currentUser?.uid ?? '';
+  }
 
   @override
   void onInit() {
@@ -65,11 +70,10 @@ class AddPhotographerController extends GetxController {
 
     try {
       Reference firebaseStorageRef =
-          FirebaseStorage.instance.ref().child('photographers/$fileName');
+      FirebaseStorage.instance.ref().child('photographers/$fileName');
       UploadTask uploadTask = firebaseStorageRef.putFile(file);
       TaskSnapshot taskSnapshot = await uploadTask;
-      String downloadURL =
-          await taskSnapshot.ref.getDownloadURL(); // Get the URL after upload
+      String downloadURL = await taskSnapshot.ref.getDownloadURL(); // Get the URL after upload
       return downloadURL;
     } catch (e) {
       print('Error uploading image: $e');
@@ -77,9 +81,18 @@ class AddPhotographerController extends GetxController {
     }
   }
 
-  Future<void> savePhotographerDetails() async {
+  Future<void> savePhotographerDetails(String productId) async {
+    String userId = currentUserId;
+
+    if (userId.isEmpty) {
+      Get.snackbar('Error', 'User is not logged in');
+      return;
+    }
+
     try {
       String imageUrl = await uploadImageToFirebase(selectedImagePath.value);
+
+      // Create the photographer model with the details
       final photographer = AddPhotographerModel(
         name: nameController.text,
         image: imageUrl,
@@ -87,9 +100,15 @@ class AddPhotographerController extends GetxController {
         phone: phoneController.text,
         socialLinks: [socialController.text],
       );
-      await FirebaseFirestore.instance
+
+      // Reference to the specific product's document inside DesignerProducts
+      CollectionReference photographerRef = FirebaseFirestore.instance
           .collection('DesignerProducts')
-          .add(photographer.toMap());
+          .doc(productId) // Use the specific product ID
+          .collection('photographers'); // Sub-collection inside the product document
+
+      // Add the photographer's details to the sub-collection
+      await photographerRef.add(photographer.toMap());
 
       clearForm();
       Get.snackbar('Success', 'Photographer details added successfully!');
@@ -97,6 +116,7 @@ class AddPhotographerController extends GetxController {
       Get.snackbar('Error', 'Failed to add photographer details: $e');
     }
   }
+
 
   void clearForm() {
     nameController.clear();
@@ -116,3 +136,4 @@ class AddPhotographerController extends GetxController {
     super.onClose();
   }
 }
+

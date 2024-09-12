@@ -61,10 +61,12 @@ class AppRoutes {
       name: '/addProduct1',
       page: () => AddproductScreen1(),
     ),
-    GetPage(
-      name: '/addPhotographer',
-      page: () => AddPhotographerScreen(),
-    ),
+    // GetPage(
+    //   name: '/addPhotographer',
+    //   page: () => AddPhotographerScreen(
+    //
+    //   ),
+    // ),
     GetPage(
       name: '/productDetail',
       page: () => ProductDetail(),

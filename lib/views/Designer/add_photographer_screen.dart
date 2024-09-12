@@ -18,7 +18,8 @@ import '../../utils/components/constant/app_images.dart';
 import '../../utils/components/constant/app_textstyle.dart';
 
 class AddPhotographerScreen extends StatelessWidget {
-  AddPhotographerScreen({super.key});
+  final String productId; // Accept the productId
+  AddPhotographerScreen({super.key, required this.productId});
 
   final AddPhotographerController controller =
       Get.put(AddPhotographerController());
@@ -221,9 +222,7 @@ class AddPhotographerScreen extends StatelessWidget {
                           children: [
                             Button(
                               ontap: () {
-                                controller.savePhotographerDetails(
-
-                                );
+                                controller.savePhotographerDetails(productId);
                               },
                               text: 'SAVE',
                               textcolor: AppColors.white,
@@ -233,7 +232,7 @@ class AddPhotographerScreen extends StatelessWidget {
                             15.ph,
                             Button(
                               ontap: () {
-                                Get.toNamed('productDetail');
+                                controller.savePhotographerDetails(productId);
                               },
                               text: 'PREVIEW',
                               textcolor: AppColors.secondary,

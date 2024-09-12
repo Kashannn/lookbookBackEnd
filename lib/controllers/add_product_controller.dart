@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -94,10 +95,9 @@ class AddProductController extends GetxController {
         _phoneErrorText.value.isEmpty &&
         _priceErrorText.value.isEmpty &&
         _descriptionErrorText.value.isEmpty &&
-        selectedCategory.value.isNotEmpty && // Ensure a category is selected
-        selectedImages.isNotEmpty; // Ensure at least one image is selected
+        selectedCategory.value.isNotEmpty &&
+        selectedImages.isNotEmpty;
   }
-
 
   Future<void> pickImage() async {
     final picker = ImagePicker();
@@ -175,11 +175,11 @@ class AddProductController extends GetxController {
     );
   }
 
-  Future<void> saveProductData() async {
+  Future<String?> saveProductData() async {
     try {
       if (selectedCategory.value.isEmpty) {
         Get.snackbar('Error', 'Please select a category');
-        return;
+        return null;
       }
 
       List<String> imageUrls = [];
@@ -205,14 +205,17 @@ class AddProductController extends GetxController {
         email: emailController.text,
       );
 
-      await addProductServices.saveProduct(product);
+      DocumentReference docRef = await addProductServices.saveProduct(product);
 
+      String docId = docRef.id;
       Get.snackbar('Success', 'Product saved successfully!');
+
+      return docId;
     } catch (e) {
       Get.snackbar('Error', 'Failed to save product: $e');
+      return null;
     }
   }
-
 
   @override
   void onClose() {
