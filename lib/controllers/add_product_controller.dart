@@ -27,6 +27,7 @@ class AddProductController extends GetxController {
   final colorController = TextEditingController();
   final sizeController = TextEditingController();
 
+  var categories = <String>[].obs;
   final isButtonActive = false.obs;
   final RxString _emailErrorText = ''.obs;
   final RxString _phoneErrorText = ''.obs;
@@ -35,6 +36,7 @@ class AddProductController extends GetxController {
   final RxString _priceErrorText = ''.obs;
   final RxString selectedImagePath = ''.obs;
   final List<File> selectedImages = <File>[].obs;
+  var selectedCategory = ''.obs;
 
   final FocusNode categoryFocusNode = FocusNode();
   final FocusNode dressFocusNode = FocusNode();
@@ -79,7 +81,6 @@ class AddProductController extends GetxController {
       email: emailController.text,
     );
 
-    _categoryErrorText.value = errors['category'] ?? '';
     _priceErrorText.value = errors['price'] ?? '';
     _descriptionErrorText.value = errors['description'] ?? '';
     _phoneErrorText.value = errors['phone'] ?? '';
@@ -91,11 +92,12 @@ class AddProductController extends GetxController {
   void _validateForm() {
     isButtonActive.value = _emailErrorText.value.isEmpty &&
         _phoneErrorText.value.isEmpty &&
-        _categoryErrorText.value.isEmpty &&
         _priceErrorText.value.isEmpty &&
         _descriptionErrorText.value.isEmpty &&
-        selectedImages.isNotEmpty;
+        selectedCategory.value.isNotEmpty && // Ensure a category is selected
+        selectedImages.isNotEmpty; // Ensure at least one image is selected
   }
+
 
   Future<void> pickImage() async {
     final picker = ImagePicker();
@@ -175,14 +177,20 @@ class AddProductController extends GetxController {
 
   Future<void> saveProductData() async {
     try {
+      if (selectedCategory.value.isEmpty) {
+        Get.snackbar('Error', 'Please select a category');
+        return;
+      }
+
       List<String> imageUrls = [];
       for (var image in selectedImages) {
         String imageUrl = await uploadImageToFirebase(image.path);
         imageUrls.add(imageUrl);
       }
+
       final AddProductModel product = AddProductModel(
         userId: FirebaseAuth.instance.currentUser!.uid,
-        category: [categoryController.text],
+        category: [selectedCategory.value],
         dressTitle: dressController.text,
         price: priceController.text,
         productDescription: descriptionController.text,
@@ -191,7 +199,7 @@ class AddProductController extends GetxController {
             .toList(),
         sizes: [selectedSize.value],
         minimumOrderQuantity: quantityController.text,
-        instagramLinks: [socialController.text],
+        socialLinks: [socialController.text],
         images: imageUrls,
         phone: phoneController.text,
         email: emailController.text,
@@ -204,6 +212,7 @@ class AddProductController extends GetxController {
       Get.snackbar('Error', 'Failed to save product: $e');
     }
   }
+
 
   @override
   void onClose() {

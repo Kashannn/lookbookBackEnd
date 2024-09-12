@@ -88,7 +88,7 @@ class AddPhotographerController extends GetxController {
         socialLinks: [socialController.text],
       );
       await FirebaseFirestore.instance
-          .collection('photographers')
+          .collection('DesignerProducts')
           .add(photographer.toMap());
 
       clearForm();

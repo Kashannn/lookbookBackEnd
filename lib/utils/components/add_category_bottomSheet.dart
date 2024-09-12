@@ -8,9 +8,12 @@ import 'package:lookbook/utils/components/constant/app_textstyle.dart';
 import 'package:lookbook/utils/components/reusedbutton.dart';
 import 'package:lookbook/utils/components/textfield.dart';
 
+import '../../controllers/add_product_controller.dart';
+
 class AddCategoryBottomsheet extends StatelessWidget {
   AddCategoryBottomsheet({super.key});
-  final AddCategoryController controller = Get.put(AddCategoryController());
+  final AddCategoryController controller = Get.put(AddCategoryController()); // Getting the AddCategoryController
+  final AddProductController productController = Get.find();
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +49,7 @@ class AddCategoryBottomsheet extends StatelessWidget {
               ],
             ),
             Text(
-              'AddCategory',
+              'Add Category',
               style: tSStyleBlack16400,
             ),
             10.ph,
@@ -61,7 +64,15 @@ class AddCategoryBottomsheet extends StatelessWidget {
               height: 58.h,
               child: reusedButton(
                 text: 'ADD',
-                ontap: () {},
+                ontap: () {
+                  if (controller.categoryController.text.isNotEmpty) {
+                    controller.addCategoryToFirebase(controller.categoryController.text);
+                    controller.categoryController.clear();
+                    Get.back();
+                  } else {
+                    Get.snackbar('Error', 'Please enter a category');
+                  }
+                },
                 color: AppColors.secondary,
                 icon: Icons.add_circle_outline_outlined,
               ),

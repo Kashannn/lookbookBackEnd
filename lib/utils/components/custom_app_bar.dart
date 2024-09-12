@@ -15,7 +15,6 @@ class CustomAppBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        20.ph,
         Row(
           children: [
             IconButton(

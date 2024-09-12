@@ -44,7 +44,6 @@ class ProductCard extends StatelessWidget {
           ),
           10.ph,
           Container(
-            height: 78.h,
             width: 187.w,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10.r),

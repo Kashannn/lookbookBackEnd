@@ -14,7 +14,6 @@ class AdminDashboardCustomAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 75.h,
       child: Container(
         decoration: const BoxDecoration(
           color: AppColors.white,

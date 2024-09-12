@@ -9,7 +9,7 @@ class AddProductModel {
   List<String>? colors;
   List<String>? sizes;
   String? minimumOrderQuantity;
-  List<String>? instagramLinks;
+  List<String>? socialLinks;
   List<String>? images;
   String? phone;
   String? email;
@@ -23,7 +23,7 @@ class AddProductModel {
     this.colors,
     this.sizes,
     this.minimumOrderQuantity,
-    this.instagramLinks,
+    this.socialLinks,
     this.images,
     this.phone,
     this.email,
@@ -39,7 +39,7 @@ class AddProductModel {
       'colors': colors,
       'sizes': sizes,
       'minimumOrderQuantity': minimumOrderQuantity,
-      'instagramLinks': instagramLinks,
+      'socialLinks': socialLinks,
       'images': images,
       'phone': phone,
       'email': email,
@@ -56,7 +56,7 @@ class AddProductModel {
       colors: List<String>.from(map['colors'] ?? []),
       sizes: List<String>.from(map['sizes'] ?? []),
       minimumOrderQuantity: map['minimumOrderQuantity'] ?? '',
-      instagramLinks: List<String>.from(map['instagramLinks'] ?? []),
+      socialLinks: List<String>.from(map['socialLinks'] ?? []),
       images: List<String>.from(map['images'] ?? []),
       phone: map['phone'] ?? '',
       email: map['email'] ?? '',

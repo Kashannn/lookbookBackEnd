@@ -9,6 +9,7 @@ import 'package:lookbook/utils/components/constant/app_textstyle.dart';
 import 'package:lookbook/utils/components/custom_app_bar.dart';
 import 'package:lookbook/utils/components/reusedbutton.dart';
 import 'package:lookbook/utils/components/textfield.dart';
+import '../../controllers/add_category_controller.dart';
 import '../../utils/components/add_category_bottomSheet.dart';
 import '../../utils/components/add_socialLinks.dart';
 import '../../utils/components/colorPicker.dart';
@@ -20,6 +21,8 @@ class AddproductScreen1 extends StatelessWidget {
   AddproductScreen1({super.key});
 
   final AddProductController controller = Get.put(AddProductController());
+  final AddCategoryController categoryController =
+      Get.put(AddCategoryController());
 
   @override
   Widget build(BuildContext context) {
@@ -186,14 +189,48 @@ class AddproductScreen1 extends StatelessWidget {
                         ),
                       ),
                       10.ph,
-                      textfield(
-                        text: 'Type',
-                        toHide: false,
-                        controller: controller.categoryController,
-                        focusNode: controller.categoryFocusNode,
-                        nextFocusNode: controller.dressFocusNode,
-                        errorText: controller.categoryErrorText,
-                      ),
+                      Obx(() {
+                        if (categoryController.categories.isEmpty) {
+                          return Text("Loading categories...");
+                        }
+                        return DropdownButtonFormField<String>(
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(30.0),
+                              borderSide: BorderSide(
+                                color: AppColors.greylight,
+                                width: 1.0,
+                              ),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(30.0),
+                              borderSide: BorderSide(
+                                color: AppColors.greylight,
+                              ),
+                            ),
+                          ),
+                          hint: Text("Select a Category",
+                              style: TextStyle(
+                                color: AppColors.greylight,
+                              )
+
+                          ),
+                          value: controller.selectedCategory.value.isNotEmpty
+                              ? controller.selectedCategory.value
+                              : null,
+                          items: categoryController.categories
+                              .map((String category) {
+                            return DropdownMenuItem<String>(
+                              value: category,
+                              child: Text(category),
+                            );
+                          }).toList(),
+                          onChanged: (String? newValue) {
+                            controller.selectedCategory.value = newValue ?? '';
+                            print('Selected category: $newValue');
+                          },
+                        );
+                      }),
                       10.ph,
                       Row(
                         children: [
@@ -328,7 +365,7 @@ class AddproductScreen1 extends StatelessWidget {
                       ),
                       15.ph,
                       Text(
-                        'Instagram Links',
+                        'Social Links',
                         style: tSStyleBlack16600.copyWith(
                           color: AppColors.primaryColor,
                         ),

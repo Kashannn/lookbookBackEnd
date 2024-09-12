@@ -85,7 +85,7 @@ class _ReportScreenState extends State<ReportScreen> {
                           ),
                           10.pw,
                           Text(
-                            'Jhone  Lane (Designer)',
+                            'Jhone  Lane ',
                             style: iStyleBlack13700.copyWith(
                               color: AppColors.text3,
                             ),
@@ -96,7 +96,6 @@ class _ReportScreenState extends State<ReportScreen> {
                             style: iStyleBlack13700.copyWith(
                               color: Color(0xFFE47F46),
                               decoration: TextDecoration.underline,
-
                             ),
                           ),
                         ],
@@ -121,7 +120,6 @@ class _ReportScreenState extends State<ReportScreen> {
               20.ph,
               SizedBox(
                 width: 381.w,
-                height: 178.h,
                 child: InkWell(
                   onTap: () {},
                   child: Material(
@@ -171,7 +169,6 @@ class _ReportScreenState extends State<ReportScreen> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 SizedBox(
-                                  height: 64.h,
                                   width: 340.w,
                                   child: Text(
                                     'This behavior has not only affected the overall morale of the team but has also hindered our ability to work effectively and cohesively.',
@@ -181,7 +178,8 @@ class _ReportScreenState extends State<ReportScreen> {
                                     textAlign: TextAlign.justify,
                                   ),
                                 )
-                              ])
+                              ]),
+                          20.ph
                         ],
                       ),
                     ),
