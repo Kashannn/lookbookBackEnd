@@ -192,7 +192,7 @@ class AddproductScreen1 extends StatelessWidget {
                       10.ph,
                       Obx(() {
                         if (categoryController.categories.isEmpty) {
-                          return Text("Loading categories...");
+                          return Text("No categories available");
                         }
                         return DropdownButtonFormField<String>(
                           decoration: InputDecoration(
@@ -370,12 +370,35 @@ class AddproductScreen1 extends StatelessWidget {
                         ),
                       ),
                       10.ph,
-                      textfield(
-                        text: 'Instagram.com',
-                        toHide: false,
-                        controller: controller.socialController,
-                        focusNode: controller.socialFocusNode,
-                        nextFocusNode: controller.phoneFocusNode,
+                      Obx(
+                        () => Column(
+                          children: List.generate(
+                            controller.socialLinks.length,
+                            (index) => Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  controller.socialLinks[index]['title'] ?? '',
+                                  style: tSStyleBlack16600.copyWith(
+                                    color: AppColors.primaryColor,
+                                  ),
+                                ),
+                                5.ph,
+                                textfield(
+                                  text: controller.socialLinks[index]['link'] ??
+                                      '',
+                                  toHide: false,
+                                  controller: TextEditingController(
+                                    text: controller.socialLinks[index]
+                                            ['link'] ??
+                                        '',
+                                  ),
+                                ),
+                                10.ph,
+                              ],
+                            ),
+                          ),
+                        ),
                       ),
                       10.ph,
                       Row(
@@ -390,6 +413,7 @@ class AddproductScreen1 extends StatelessWidget {
                           InkWell(
                             onTap: () {
                               showModalBottomSheet(
+                                clipBehavior: Clip.antiAlias,
                                 context: context,
                                 isScrollControlled: true,
                                 backgroundColor: Colors.transparent,
@@ -397,18 +421,44 @@ class AddproductScreen1 extends StatelessWidget {
                                   return DraggableScrollableSheet(
                                     expand: false,
                                     initialChildSize: 0.4,
-                                    builder: (_, controller) {
-                                      return Container(
-                                        decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          borderRadius: BorderRadius.only(
-                                            topLeft: Radius.circular(30.r),
-                                            topRight: Radius.circular(30.r),
+                                    minChildSize: 0.3,
+                                    maxChildSize: 0.8,
+                                    builder: (_, scrollController) {
+                                      return GestureDetector(
+                                        onTap: () {
+                                          FocusScope.of(context)
+                                              .unfocus(); // Dismiss keyboard on tap outside
+                                        },
+                                        child: Padding(
+                                          padding: EdgeInsets.only(
+                                            bottom: MediaQuery.of(context)
+                                                .viewInsets
+                                                .bottom, // Adjust for keyboard
+                                          ),
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              borderRadius: BorderRadius.only(
+                                                topLeft: Radius.circular(30.r),
+                                                topRight: Radius.circular(30.r),
+                                              ),
+                                            ),
+                                            padding: EdgeInsets.symmetric(
+                                              horizontal: 15.w,
+                                              vertical: 10.h,
+                                            ),
+                                            child: SingleChildScrollView(
+                                              controller:
+                                                  scrollController,
+                                              child: AddSociallinks(
+                                                onAdd: (title, link) {
+                                                  controller.addSocialLink(
+                                                      title, link);
+                                                },
+                                              ),
+                                            ),
                                           ),
                                         ),
-                                        padding: EdgeInsets.symmetric(
-                                            horizontal: 0.w, vertical: 0.h),
-                                        child: AddSociallinks(),
                                       );
                                     },
                                   );
@@ -456,27 +506,33 @@ class AddproductScreen1 extends StatelessWidget {
                       ),
                       25.ph,
                       Obx(
-                        () => SizedBox(
-                          height: 58.h,
-                          child: reusedButton(
-                            icon: Icons.arrow_forward_outlined,
-                            text: 'NEXT',
-                            ontap: controller.isButtonActive.value
-                                ? () async {
-                                    String? productID =
-                                        await controller.saveProductData();
-                                    Get.to(
-                                      () => AddPhotographerScreen(
-                                        productId: productID!,
-                                      ),
-                                    );
-                                  }
-                                : null,
-                            color: controller.isButtonActive.value
-                                ? AppColors.secondary
-                                : AppColors.greylight,
-                          ),
-                        ),
+                        () => controller.isLoading.value
+                            ? Center(
+                                child: CircularProgressIndicator(),
+                              )
+                            : SizedBox(
+                                height: 58.h,
+                                child: reusedButton(
+                                  icon: Icons.arrow_forward_outlined,
+                                  text: 'NEXT',
+                                  ontap: controller.isButtonActive.value
+                                      ? () async {
+                                          String? productID = await controller
+                                              .saveProductData();
+                                          if (productID != null) {
+                                            Get.to(
+                                              () => AddPhotographerScreen(
+                                                productId: productID,
+                                              ),
+                                            );
+                                          }
+                                        }
+                                      : null,
+                                  color: controller.isButtonActive.value
+                                      ? AppColors.secondary
+                                      : AppColors.greylight,
+                                ),
+                              ),
                       ),
                       20.ph,
                     ],

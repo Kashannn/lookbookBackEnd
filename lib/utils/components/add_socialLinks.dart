@@ -9,16 +9,18 @@ import 'package:lookbook/utils/components/reusedbutton.dart';
 import 'package:lookbook/utils/components/textfield.dart';
 
 class AddSociallinks extends StatelessWidget {
-  AddSociallinks({super.key});
+  final Function(String title, String link) onAdd;
+
+  AddSociallinks({super.key, required this.onAdd});
+
   final AddSocialLinkController controller = Get.put(AddSocialLinkController());
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       width: MediaQuery.of(context).size.width,
       child: Padding(
-        padding: EdgeInsets.symmetric(
-          horizontal: 15.0.w,
-        ),
+        padding: EdgeInsets.symmetric(horizontal: 15.0.w),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -38,9 +40,7 @@ class AddSociallinks extends StatelessWidget {
                   onPressed: () {
                     Get.back();
                   },
-                  icon: const Icon(
-                    Icons.close,
-                  ),
+                  icon: const Icon(Icons.close),
                 )
               ],
             ),
@@ -66,10 +66,19 @@ class AddSociallinks extends StatelessWidget {
             SizedBox(
               height: 58.h,
               child: reusedButton(
-                  text: 'ADD',
-                  ontap: () {},
-                  color: AppColors.secondary,
-                  icon: Icons.add_circle_outline_outlined),
+                text: 'ADD',
+                ontap: () {
+                  String title = controller.titleController.text;
+                  String link = controller.linkController.text;
+
+                  if (title.isNotEmpty && link.isNotEmpty) {
+                    onAdd(title, link); // Send data back to the parent widget
+                    Get.back(); // Close the modal
+                  }
+                },
+                color: AppColors.secondary,
+                icon: Icons.add_circle_outline_outlined,
+              ),
             ),
           ],
         ),
@@ -77,3 +86,5 @@ class AddSociallinks extends StatelessWidget {
     );
   }
 }
+
+

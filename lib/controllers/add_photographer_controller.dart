@@ -11,13 +11,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:path/path.dart';
 
 import '../Model/AddProductModel/add_photographer_model.dart';
+import '../views/Designer/designer_main_screen.dart';
 
 class AddPhotographerController extends GetxController {
   final nameController = TextEditingController();
-  final socialController = TextEditingController();
   final phoneController = TextEditingController();
   final emailController = TextEditingController();
 
+  var socialLinks = <Map<String, String>>[].obs;
   final isFormComplete = false.obs;
   final RxString _emailErrorText = ''.obs;
   final RxString selectedImagePath = ''.obs;
@@ -26,12 +27,20 @@ class AddPhotographerController extends GetxController {
   final FocusNode socialFocusNode = FocusNode();
   final FocusNode phoneFocusNode = FocusNode();
   final FocusNode emailFocusNode = FocusNode();
+  final isLoading = false.obs;
 
   String? get emailErrorText =>
       _emailErrorText.value.isEmpty ? null : _emailErrorText.value;
 
   String get currentUserId {
     return FirebaseAuth.instance.currentUser?.uid ?? '';
+  }
+
+  void addSocialLink(String title, String link) {
+    if (title.isNotEmpty && link.isNotEmpty) {
+      socialLinks.add({'title': title, 'link': link});
+      _validateForm();
+    }
   }
 
   @override
@@ -46,13 +55,14 @@ class AddPhotographerController extends GetxController {
     _validateForm();
   }
 
+  // Validate the entire form
   void _validateForm() {
     isFormComplete.value = nameController.text.isNotEmpty &&
-        socialController.text.isNotEmpty &&
         phoneController.text.isNotEmpty &&
         emailController.text.isNotEmpty &&
         selectedImagePath.isNotEmpty &&
-        _emailErrorText.value.isEmpty;
+        _emailErrorText.value.isEmpty &&
+        socialLinks.isNotEmpty;
   }
 
   Future<void> pickImage() async {
@@ -70,10 +80,10 @@ class AddPhotographerController extends GetxController {
 
     try {
       Reference firebaseStorageRef =
-      FirebaseStorage.instance.ref().child('photographers/$fileName');
+          FirebaseStorage.instance.ref().child('photographers/$fileName');
       UploadTask uploadTask = firebaseStorageRef.putFile(file);
       TaskSnapshot taskSnapshot = await uploadTask;
-      String downloadURL = await taskSnapshot.ref.getDownloadURL(); // Get the URL after upload
+      String downloadURL = await taskSnapshot.ref.getDownloadURL();
       return downloadURL;
     } catch (e) {
       print('Error uploading image: $e');
@@ -82,8 +92,8 @@ class AddPhotographerController extends GetxController {
   }
 
   Future<void> savePhotographerDetails(String productId) async {
+    isLoading.value = true;
     String userId = currentUserId;
-
     if (userId.isEmpty) {
       Get.snackbar('Error', 'User is not logged in');
       return;
@@ -91,38 +101,39 @@ class AddPhotographerController extends GetxController {
 
     try {
       String imageUrl = await uploadImageToFirebase(selectedImagePath.value);
-
-      // Create the photographer model with the details
       final photographer = AddPhotographerModel(
         name: nameController.text,
         image: imageUrl,
         email: emailController.text,
         phone: phoneController.text,
-        socialLinks: [socialController.text],
+        socialLinks: socialLinks
+            .map((link) => {
+                  'title': link['title'],
+                  'link': link['link'],
+                })
+            .toList(),
       );
 
-      // Reference to the specific product's document inside DesignerProducts
       CollectionReference photographerRef = FirebaseFirestore.instance
           .collection('DesignerProducts')
-          .doc(productId) // Use the specific product ID
-          .collection('photographers'); // Sub-collection inside the product document
-
-      // Add the photographer's details to the sub-collection
+          .doc(productId)
+          .collection('photographers');
       await photographerRef.add(photographer.toMap());
-
       clearForm();
       Get.snackbar('Success', 'Photographer details added successfully!');
+      Get.to(() => DesignerMainScreen());
     } catch (e) {
       Get.snackbar('Error', 'Failed to add photographer details: $e');
+    } finally {
+      isLoading.value = false;
     }
   }
 
-
   void clearForm() {
     nameController.clear();
-    socialController.clear();
     phoneController.clear();
     emailController.clear();
+    socialLinks.clear();
     selectedImagePath.value = '';
     isFormComplete.value = false;
   }
@@ -130,10 +141,8 @@ class AddPhotographerController extends GetxController {
   @override
   void onClose() {
     nameController.dispose();
-    socialController.dispose();
     phoneController.dispose();
     emailController.dispose();
     super.onClose();
   }
 }
-

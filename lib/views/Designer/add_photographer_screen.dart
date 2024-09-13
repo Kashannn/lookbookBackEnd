@@ -11,14 +11,14 @@ import 'package:lookbook/extension/sizebox_extension.dart';
 import 'package:lookbook/utils/components/custom_app_bar.dart';
 import 'package:lookbook/utils/components/reusedbutton.dart';
 import 'package:lookbook/utils/components/textfield.dart';
-
 import '../../utils/components/add_socialLinks.dart';
 import '../../utils/components/constant/app_colors.dart';
 import '../../utils/components/constant/app_images.dart';
 import '../../utils/components/constant/app_textstyle.dart';
+import 'designer_main_screen.dart';
 
 class AddPhotographerScreen extends StatelessWidget {
-  final String productId; // Accept the productId
+  final String productId;
   AddPhotographerScreen({super.key, required this.productId});
 
   final AddPhotographerController controller =
@@ -29,7 +29,9 @@ class AddPhotographerScreen extends StatelessWidget {
     return SafeArea(
       child: Scaffold(
         body: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 19.w, vertical: 26.h),
+          padding: EdgeInsets.symmetric(
+            horizontal: 19.w,
+          ),
           child: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -97,7 +99,7 @@ class AddPhotographerScreen extends StatelessWidget {
                                 ),
                               ),
                         if (controller.selectedImagePath.value.isEmpty)
-                          SizedBox(height: 15.h), // Conditional spacing
+                          SizedBox(height: 15.h),
                         if (controller.selectedImagePath.value.isEmpty)
                           Center(
                             child: Text(
@@ -134,19 +136,39 @@ class AddPhotographerScreen extends StatelessWidget {
                   ),
                 ),
                 10.ph,
-                textfield(
-                  text: 'instagram.com',
-                  toHide: false,
-                  controller: controller.socialController,
-                  focusNode: controller.socialFocusNode,
-                  nextFocusNode: controller.phoneFocusNode,
+                Obx(
+                  () => Column(
+                    children: List.generate(
+                      controller.socialLinks.length,
+                      (index) => Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            controller.socialLinks[index]['title'] ?? '',
+                            style: tSStyleBlack16600.copyWith(
+                              color: AppColors.primaryColor,
+                            ),
+                          ),
+                          5.ph,
+                          textfield(
+                            text: controller.socialLinks[index]['link'] ?? '',
+                            toHide: false,
+                            controller: TextEditingController(
+                              text: controller.socialLinks[index]['link'] ?? '',
+                            ),
+                          ),
+                          10.ph,
+                        ],
+                      ),
+                    ),
+                  ),
                 ),
                 10.ph,
                 Row(
                   children: [
                     Text(
                       'Add Social Links',
-                      style: tSStyleBlack16600.copyWith(
+                      style: tSStyleBlack14400.copyWith(
                         color: AppColors.primaryColor,
                       ),
                     ),
@@ -160,18 +182,45 @@ class AddPhotographerScreen extends StatelessWidget {
                           builder: (BuildContext context) {
                             return DraggableScrollableSheet(
                               expand: false,
-                              builder: (_, controller) {
-                                return Container(
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.only(
-                                      topLeft: Radius.circular(30.r),
-                                      topRight: Radius.circular(30.r),
+                              initialChildSize: 0.4,
+                              minChildSize: 0.3,
+                              maxChildSize: 0.8,
+                              builder: (_, scrollController) {
+                                return GestureDetector(
+                                  onTap: () {
+                                    FocusScope.of(context)
+                                        .unfocus(); // Dismiss keyboard on tap outside
+                                  },
+                                  child: Padding(
+                                    padding: EdgeInsets.only(
+                                      bottom: MediaQuery.of(context)
+                                          .viewInsets
+                                          .bottom, // Adjust for keyboard
+                                    ),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(30.r),
+                                          topRight: Radius.circular(30.r),
+                                        ),
+                                      ),
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: 15.w,
+                                        vertical: 10.h,
+                                      ),
+                                      child: SingleChildScrollView(
+                                        controller:
+                                            scrollController, // Enable scrolling with this controller
+                                        child: AddSociallinks(
+                                          onAdd: (title, link) {
+                                            controller.addSocialLink(
+                                                title, link);
+                                          },
+                                        ),
+                                      ),
                                     ),
                                   ),
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 0.w, vertical: 0.h),
-                                  child: AddSociallinks(),
                                 );
                               },
                             );
@@ -184,7 +233,7 @@ class AddPhotographerScreen extends StatelessWidget {
                     ),
                   ],
                 ),
-                15.ph,
+                10.ph,
                 Text(
                   'Phone',
                   style: tSStyleBlack16600.copyWith(
@@ -217,39 +266,45 @@ class AddPhotographerScreen extends StatelessWidget {
                 ),
                 38.ph,
                 Obx(() {
-                  return controller.isFormComplete.value
-                      ? Column(
-                          children: [
-                            Button(
-                              ontap: () {
-                                controller.savePhotographerDetails(productId);
-                              },
-                              text: 'SAVE',
-                              textcolor: AppColors.white,
-                              bgColor: AppColors.secondary,
-                              borderColor: AppColors.white,
+                  if (controller.isLoading.value) {
+                    return Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  } else {
+                    return controller.isFormComplete.value
+                        ? Column(
+                            children: [
+                              Button(
+                                ontap: () {
+                                  controller.savePhotographerDetails(productId);
+                                },
+                                text: 'SAVE',
+                                textcolor: AppColors.white,
+                                bgColor: AppColors.secondary,
+                                borderColor: AppColors.white,
+                              ),
+                              15.ph,
+                              Button(
+                                ontap: () {
+                                  controller.savePhotographerDetails(productId);
+                                },
+                                text: 'PREVIEW',
+                                textcolor: AppColors.secondary,
+                                bgColor: AppColors.white,
+                                borderColor: AppColors.secondary,
+                              ),
+                            ],
+                          )
+                        : SizedBox(
+                            height: 58.h,
+                            child: reusedButton(
+                              text: 'NEXT',
+                              ontap: () {},
+                              color: AppColors.greylight,
+                              icon: Icons.arrow_forward_outlined,
                             ),
-                            15.ph,
-                            Button(
-                              ontap: () {
-                                controller.savePhotographerDetails(productId);
-                              },
-                              text: 'PREVIEW',
-                              textcolor: AppColors.secondary,
-                              bgColor: AppColors.white,
-                              borderColor: AppColors.secondary,
-                            ),
-                          ],
-                        )
-                      : SizedBox(
-                          height: 58.h,
-                          child: reusedButton(
-                            text: 'NEXT',
-                            ontap: () {},
-                            color: AppColors.greylight,
-                            icon: Icons.arrow_forward_outlined,
-                          ),
-                        );
+                          );
+                  }
                 }),
                 10.ph,
               ],

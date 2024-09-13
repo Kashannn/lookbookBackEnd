@@ -3,14 +3,14 @@ class AddPhotographerModel {
   String? image;
   String? email;
   String? phone;
-  List<String>? socialLinks;
+  final List<Map<String, String?>> socialLinks;
 
   AddPhotographerModel({
     this.name,
     this.image,
     this.email,
     this.phone,
-    this.socialLinks,
+    required this.socialLinks,
   });
 
   Map<String, dynamic> toMap() {

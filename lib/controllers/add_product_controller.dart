@@ -29,6 +29,7 @@ class AddProductController extends GetxController {
   final sizeController = TextEditingController();
 
   var categories = <String>[].obs;
+  var socialLinks = <Map<String, String>>[].obs;
   final isButtonActive = false.obs;
   final RxString _emailErrorText = ''.obs;
   final RxString _phoneErrorText = ''.obs;
@@ -38,6 +39,7 @@ class AddProductController extends GetxController {
   final RxString selectedImagePath = ''.obs;
   final List<File> selectedImages = <File>[].obs;
   var selectedCategory = ''.obs;
+  final isLoading = false.obs;
 
   final FocusNode categoryFocusNode = FocusNode();
   final FocusNode dressFocusNode = FocusNode();
@@ -88,6 +90,10 @@ class AddProductController extends GetxController {
     _emailErrorText.value = errors['email'] ?? '';
 
     _validateForm();
+  }
+
+  void addSocialLink(String title, String link) {
+    socialLinks.add({'title': title, 'link': link});
   }
 
   void _validateForm() {
@@ -176,9 +182,11 @@ class AddProductController extends GetxController {
   }
 
   Future<String?> saveProductData() async {
+    isLoading.value = true;
     try {
       if (selectedCategory.value.isEmpty) {
         Get.snackbar('Error', 'Please select a category');
+        isLoading.value = false;
         return null;
       }
       List<String> imageUrls = [];
@@ -197,7 +205,12 @@ class AddProductController extends GetxController {
             .toList(),
         sizes: [selectedSize.value],
         minimumOrderQuantity: quantityController.text,
-        socialLinks: [socialController.text],
+        socialLinks: socialLinks
+            .map((link) => {
+                  'title': link['title'],
+                  'link': link['link'],
+                })
+            .toList(),
         images: imageUrls,
         phone: phoneController.text,
         email: emailController.text,
@@ -209,7 +222,31 @@ class AddProductController extends GetxController {
     } catch (e) {
       Get.snackbar('Error', 'Failed to save product: $e');
       return null;
+    } finally {
+      clearForm();
+      isLoading.value = false;
     }
+  }
+
+  void clearForm() {
+    categoryController.clear();
+    dressController.clear();
+    priceController.clear();
+    descriptionController.clear();
+    quantityController.clear();
+    socialController.clear();
+    phoneController.clear();
+    emailController.clear();
+    selectedCategory.value = '';
+    selectedColors.clear();
+    selectedImages.clear();
+    socialLinks.clear();
+    selectedSize.value = '';
+    _priceErrorText.value = '';
+    _descriptionErrorText.value = '';
+    _phoneErrorText.value = '';
+    _emailErrorText.value = '';
+    isButtonActive.value = false;
   }
 
   @override
