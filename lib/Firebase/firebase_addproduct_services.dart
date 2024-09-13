@@ -5,7 +5,6 @@ import '../Model/AddProductModel/add_product_model.dart';
 class FirebaseAddProductServices {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
   Future<DocumentReference> saveProduct(AddProductModel product) {
-    // This will return the DocumentReference
     return FirebaseFirestore.instance
         .collection('DesignerProducts')
         .add(product.toMap());

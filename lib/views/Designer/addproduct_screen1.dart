@@ -213,9 +213,7 @@ class AddproductScreen1 extends StatelessWidget {
                           hint: Text("Select a Category",
                               style: TextStyle(
                                 color: AppColors.greylight,
-                              )
-
-                          ),
+                              )),
                           value: controller.selectedCategory.value.isNotEmpty
                               ? controller.selectedCategory.value
                               : null,
@@ -465,10 +463,10 @@ class AddproductScreen1 extends StatelessWidget {
                             text: 'NEXT',
                             ontap: controller.isButtonActive.value
                                 ? () async {
-                              String? productID =await controller.saveProductData();
-
+                                    String? productID =
+                                        await controller.saveProductData();
                                     Get.to(
-                                      () =>  AddPhotographerScreen(
+                                      () => AddPhotographerScreen(
                                         productId: productID!,
                                       ),
                                     );

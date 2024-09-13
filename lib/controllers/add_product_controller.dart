@@ -181,13 +181,11 @@ class AddProductController extends GetxController {
         Get.snackbar('Error', 'Please select a category');
         return null;
       }
-
       List<String> imageUrls = [];
       for (var image in selectedImages) {
         String imageUrl = await uploadImageToFirebase(image.path);
         imageUrls.add(imageUrl);
       }
-
       final AddProductModel product = AddProductModel(
         userId: FirebaseAuth.instance.currentUser!.uid,
         category: [selectedCategory.value],
@@ -204,12 +202,9 @@ class AddProductController extends GetxController {
         phone: phoneController.text,
         email: emailController.text,
       );
-
       DocumentReference docRef = await addProductServices.saveProduct(product);
-
       String docId = docRef.id;
       Get.snackbar('Success', 'Product saved successfully!');
-
       return docId;
     } catch (e) {
       Get.snackbar('Error', 'Failed to save product: $e');
