@@ -22,7 +22,7 @@ class DesignerBottomNavController extends GetxController {
   final PageController pageController = PageController();
 
   final List<Widget> screens = [
-    const DesignerHomeScreen(),
+    DesignerHomeScreen(),
     const DesignerAllConversationScreen(),
     const DesignerNotificationScreen(),
     ProfileScreen()
@@ -48,20 +48,20 @@ class AdminBottomNavController extends GetxController {
     pageController.jumpToPage(index);
   }
 }
+
 class CustomerBottomNavController extends GetxController {
   var selectedIndex = 0.obs;
   final PageController pageController = PageController();
 
   final List<Widget> screens = [
-    const CustomerDashboardScreen(),        // Index 0: Home
-    const CustomerAllConversationScreen(),  // Index 1: Messages
-    const CustomerNotificationScreen(),     // Index 2: Notifications (corrected)
-    const CustomerProfileScreen(),          // Index 3: Profile
+    const CustomerDashboardScreen(), // Index 0: Home
+    const CustomerAllConversationScreen(), // Index 1: Messages
+    const CustomerNotificationScreen(), // Index 2: Notifications (corrected)
+    const CustomerProfileScreen(), // Index 3: Profile
   ];
 
   void changeIndex(int index) {
     selectedIndex.value = index;
-    pageController.jumpToPage(index);  // Make sure the PageView is updated
+    pageController.jumpToPage(index); // Make sure the PageView is updated
   }
 }
-

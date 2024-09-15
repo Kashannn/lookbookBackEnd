@@ -178,7 +178,7 @@ class _CustomerProductDetailScreenState
                                       topRight: Radius.circular(30.r),
                                     ),
                                   ),
-                                  child: const PhotographerProfileScreen(),
+                                  // child: const PhotographerProfileScreen(),
                                 );
                               },
                             );

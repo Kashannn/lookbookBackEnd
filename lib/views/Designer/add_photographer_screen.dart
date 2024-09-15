@@ -189,13 +189,13 @@ class AddPhotographerScreen extends StatelessWidget {
                                 return GestureDetector(
                                   onTap: () {
                                     FocusScope.of(context)
-                                        .unfocus(); // Dismiss keyboard on tap outside
+                                        .unfocus();
                                   },
                                   child: Padding(
                                     padding: EdgeInsets.only(
                                       bottom: MediaQuery.of(context)
                                           .viewInsets
-                                          .bottom, // Adjust for keyboard
+                                          .bottom,
                                     ),
                                     child: Container(
                                       decoration: BoxDecoration(

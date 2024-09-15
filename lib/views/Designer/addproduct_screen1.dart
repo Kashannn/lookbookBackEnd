@@ -30,6 +30,10 @@ class AddproductScreen1 extends StatelessWidget {
     return SafeArea(
       child: Scaffold(
         resizeToAvoidBottomInset: true,
+        appBar: AppBar(
+            title: CustomAppBar(),
+            backgroundColor: Colors.white,
+            automaticallyImplyLeading: false),
         body: Padding(
           padding: EdgeInsets.symmetric(
             horizontal: 20.w,
@@ -37,7 +41,6 @@ class AddproductScreen1 extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const CustomAppBar(),
               30.ph,
               Center(
                 child: Text(
@@ -195,6 +198,7 @@ class AddproductScreen1 extends StatelessWidget {
                           return Text("No categories available");
                         }
                         return DropdownButtonFormField<String>(
+                          style: tSStyleBlack16400,
                           decoration: InputDecoration(
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(30.0),
@@ -448,8 +452,7 @@ class AddproductScreen1 extends StatelessWidget {
                                               vertical: 10.h,
                                             ),
                                             child: SingleChildScrollView(
-                                              controller:
-                                                  scrollController,
+                                              controller: scrollController,
                                               child: AddSociallinks(
                                                 onAdd: (title, link) {
                                                   controller.addSocialLink(

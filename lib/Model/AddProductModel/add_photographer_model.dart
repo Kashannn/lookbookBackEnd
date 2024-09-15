@@ -13,6 +13,19 @@ class AddPhotographerModel {
     required this.socialLinks,
   });
 
+  factory AddPhotographerModel.fromMap(Map<String, dynamic> map) {
+    return AddPhotographerModel(
+      name: map['name'] ?? '',
+      image: map['image'] ?? '',
+      email: map['email'] ?? '',
+      phone: map['phone'] ?? '',
+      socialLinks: List<Map<String, String?>>.from(
+        map['socialLinks']?.map((item) => Map<String, String?>.from(item)) ??
+            [],
+      ),
+    );
+  }
+
   Map<String, dynamic> toMap() {
     return {
       'name': name,

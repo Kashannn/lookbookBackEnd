@@ -21,10 +21,13 @@ class _AddProductScreenState extends State<AddProductScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+          title: CustomAppBar(),
+          backgroundColor: Colors.white,
+          automaticallyImplyLeading: false),
       body: SafeArea(
         child: Column(
           children: [
-            const CustomAppBar(),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 19.w, vertical: 26.h),
               child: Column(

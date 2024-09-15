@@ -1,6 +1,5 @@
-import 'package:flutter/material.dart';
-
 class AddProductModel {
+  String? id;
   String? userId;
   List<String>? category;
   String? dressTitle;
@@ -15,6 +14,7 @@ class AddProductModel {
   String? email;
 
   AddProductModel({
+    this.id,
     this.userId,
     this.category,
     this.dressTitle,
@@ -29,6 +29,25 @@ class AddProductModel {
     this.email,
   });
 
+  factory AddProductModel.fromMap(Map<String, dynamic> map, String docId) {
+    return AddProductModel(
+      id: docId,
+      userId: map['userId'],
+      category: List<String>.from(map['category'] ?? []),
+      dressTitle: map['dressTitle'] ?? '',
+      price: map['price'] ?? '',
+      productDescription: map['productDescription'] ?? '',
+      colors: List<String>.from(map['colors'] ?? []),
+      sizes: List<String>.from(map['sizes'] ?? []),
+      minimumOrderQuantity: map['minimumOrderQuantity'] ?? '',
+      socialLinks: List<Map<String, String?>>.from(
+          map['socialLinks']?.map((item) => Map<String, String?>.from(item)) ??
+              []),
+      images: List<String>.from(map['images'] ?? []),
+      phone: map['phone'] ?? '',
+      email: map['email'] ?? '',
+    );
+  }
   Map<String, dynamic> toMap() {
     return {
       'userId': userId,
@@ -44,23 +63,5 @@ class AddProductModel {
       'phone': phone,
       'email': email,
     };
-  }
-
-  factory AddProductModel.fromMap(Map<String, dynamic> map) {
-    return AddProductModel(
-      userId: map['userId'] ?? '',
-      category: List<String>.from(map['category'] ?? []),
-      dressTitle: map['dressTitle'] ?? '',
-      price: map['price'] ?? '',
-      productDescription: map['productDescription'] ?? '',
-      colors: List<String>.from(map['colors'] ?? []),
-      sizes: List<String>.from(map['sizes'] ?? []),
-      minimumOrderQuantity: map['minimumOrderQuantity'] ?? '',
-      socialLinks: List<Map<String, String?>>.from(map['socialLinks']
-          ?.map((item) => Map<String, String?>.from(item)) ?? []),
-      images: List<String>.from(map['images'] ?? []),
-      phone: map['phone'] ?? '',
-      email: map['email'] ?? '',
-    );
   }
 }

@@ -5,7 +5,6 @@ import 'package:lookbook/views/authentication/create_with_screen.dart';
 import 'package:lookbook/views/authentication/forgot_password_screen.dart';
 import 'package:lookbook/views/authentication/sign_in_screen.dart';
 import 'package:lookbook/views/authentication/sign_up_screen.dart';
-import 'package:lookbook/views/designer/add_photographer_screen.dart';
 import 'package:lookbook/views/designer/addproduct_screen1.dart';
 import 'package:lookbook/views/designer/product_detail.dart';
 import 'package:lookbook/views/welcomeScreen.dart';
@@ -22,7 +21,6 @@ import '../views/Customer/customer_Notification_Screen.dart';
 import '../views/Customer/customer_message_chat_screen.dart';
 import '../views/Customer/customer_product_detail_screen.dart';
 import '../views/Designer/designer_message_chat_screen.dart';
-import '../views/Designer/designer_profile_screen.dart';
 import '../views/Designer/home_screnn.dart';
 import '../views/Designer/notification_screen.dart';
 import '../views/Designer/profile_screen.dart';
@@ -73,7 +71,7 @@ class AppRoutes {
     ),
     GetPage(
       name: '/home',
-      page: () => const DesignerHomeScreen(),
+      page: () =>  DesignerHomeScreen(),
     ),
     GetPage(
       name: '/CustomerProductDetailScreen',
