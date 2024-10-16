@@ -7,8 +7,12 @@ import 'package:lookbook/extension/sizebox_extension.dart';
 import 'package:lookbook/utils/components/constant/app_colors.dart';
 import 'package:lookbook/utils/components/constant/app_textstyle.dart';
 
+import '../../Firebase/firebase_authentication_services.dart';
+
 class CustomerCustomMenu extends StatelessWidget {
-  const CustomerCustomMenu({super.key});
+  CustomerCustomMenu({super.key});
+  final FirebaseAuthenticationServices _firebaseAuthenticationServices =
+      Get.put(FirebaseAuthenticationServices());
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -80,7 +84,9 @@ class CustomerCustomMenu extends StatelessWidget {
                     vertical: 8,
                   ),
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  _firebaseAuthenticationServices.signOut();
+                },
                 child: Text(
                   'LOGOUT',
                   style: tSStyleBlack14400.copyWith(color: AppColors.white),

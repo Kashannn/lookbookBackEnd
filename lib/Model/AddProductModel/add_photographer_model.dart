@@ -3,6 +3,7 @@ class AddPhotographerModel {
   String? image;
   String? email;
   String? phone;
+  String? about;
   final List<Map<String, String?>> socialLinks;
 
   AddPhotographerModel({
@@ -10,6 +11,7 @@ class AddPhotographerModel {
     this.image,
     this.email,
     this.phone,
+    this.about,
     required this.socialLinks,
   });
 
@@ -19,6 +21,7 @@ class AddPhotographerModel {
       image: map['image'] ?? '',
       email: map['email'] ?? '',
       phone: map['phone'] ?? '',
+      about: map['about'] ?? '',
       socialLinks: List<Map<String, String?>>.from(
         map['socialLinks']?.map((item) => Map<String, String?>.from(item)) ??
             [],
@@ -32,6 +35,7 @@ class AddPhotographerModel {
       'image': image,
       'email': email,
       'phone': phone,
+      'about': about,
       'socialLinks': socialLinks,
     };
   }

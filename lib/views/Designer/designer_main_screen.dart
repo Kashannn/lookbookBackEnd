@@ -22,9 +22,14 @@ class _DesignerMainScreenState extends State<DesignerMainScreen> {
     return SafeArea(
       child: Scaffold(
         backgroundColor: AppColors.white,
+        appBar: AppBar(
+          title: const DesignerDashboardCustomAppBar(),
+          backgroundColor: AppColors.white,
+          elevation: 0,
+            automaticallyImplyLeading: false
+        ),
         body: Column(
           children: [
-            const DesignerDashboardCustomAppBar(),
             Expanded(
               child: PageView(
                 controller: bottomNavController.pageController,

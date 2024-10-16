@@ -12,7 +12,8 @@ import '../../controllers/add_product_controller.dart';
 
 class AddCategoryBottomsheet extends StatelessWidget {
   AddCategoryBottomsheet({super.key});
-  final AddCategoryController controller = Get.put(AddCategoryController()); // Getting the AddCategoryController
+  final AddCategoryController controller =
+      Get.put(AddCategoryController()); // Getting the AddCategoryController
   final AddProductController productController = Get.find();
 
   @override
@@ -66,7 +67,8 @@ class AddCategoryBottomsheet extends StatelessWidget {
                 text: 'ADD',
                 ontap: () {
                   if (controller.categoryController.text.isNotEmpty) {
-                    controller.addCategoryToFirebase(controller.categoryController.text);
+                    controller.addCategoryToFirebase(
+                        controller.categoryController.text);
                     controller.categoryController.clear();
                     Get.back();
                   } else {
@@ -76,7 +78,8 @@ class AddCategoryBottomsheet extends StatelessWidget {
                 color: AppColors.secondary,
                 icon: Icons.add_circle_outline_outlined,
               ),
-            )
+            ),
+            20.ph,
           ],
         ),
       ),

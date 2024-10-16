@@ -1,8 +1,14 @@
+import 'package:barcode_scan2/barcode_scan2.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:lookbook/Firebase/firebase_customerEnd_services.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:lookbook/utils/components/constant/app_images.dart';
+import 'package:lookbook/views/Customer/customer_product_detail_screen.dart';
 import '../../controllers/bottom_nav_controller.dart';
 import '../../utils/components/Customer_dashboard_custom_app_bar.dart';
 import '../../utils/components/constant/app_colors.dart';
@@ -20,6 +26,8 @@ class CustomerMainScreen extends StatefulWidget {
 class _CustomerMainScreenState extends State<CustomerMainScreen> {
   final CustomerBottomNavController bottomNavController =
       Get.put(CustomerBottomNavController());
+  FirebaseCustomerEndServices _services = FirebaseCustomerEndServices();
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -35,19 +43,18 @@ class _CustomerMainScreenState extends State<CustomerMainScreen> {
               child: PageView(
                 controller: bottomNavController.pageController,
                 onPageChanged: (index) {
-                  bottomNavController
-                      .changeIndex(index);
+                  bottomNavController.changeIndex(index);
                 },
-                children: bottomNavController
-                    .screens, // Ensure the screens list is correct
+                children: bottomNavController.screens,
               ),
             ),
           ],
         ),
+        resizeToAvoidBottomInset: false,
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            Get.to(() => QRScannerScreen());
+            _services.requestCameraPermission();
           },
           backgroundColor: AppColors.secondary,
           shape: const CircleBorder(),
@@ -57,7 +64,7 @@ class _CustomerMainScreenState extends State<CustomerMainScreen> {
           return CustomerCustomBottomNavigationBar(
             selectedIndex: bottomNavController.selectedIndex.value,
             onTap: (index) {
-              bottomNavController.changeIndex(index); // Change index on tap
+              bottomNavController.changeIndex(index);
             },
           );
         }),

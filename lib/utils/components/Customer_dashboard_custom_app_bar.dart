@@ -14,14 +14,12 @@ class CustomerDashboardCustomAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 75.h,
       child: Container(
         decoration: const BoxDecoration(
           color: AppColors.white,
         ),
         child: Column(
           children: [
-            10.ph,
             Row(
               children: [
                 IconButton(

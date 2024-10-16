@@ -5,6 +5,8 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:lookbook/extension/sizebox_extension.dart';
 
+import '../../Model/AddProductModel/add_product_model.dart';
+import '../../controllers/customer_report_controller.dart';
 import '../../utils/components/Custom_dialog.dart';
 import '../../utils/components/constant/app_colors.dart';
 import '../../utils/components/constant/app_images.dart';
@@ -15,24 +17,38 @@ import '../../utils/components/reusedbutton.dart';
 
 class CustomerReportScreen extends StatefulWidget {
   const CustomerReportScreen({super.key});
-
   @override
   State<CustomerReportScreen> createState() => _CustomerReportScreenState();
 }
 
 class _CustomerReportScreenState extends State<CustomerReportScreen> {
+  late AddProductModel product;
+
+  @override
+  void initState() {
+    super.initState();
+    product = Get.arguments as AddProductModel;
+  }
+
   @override
   Widget build(BuildContext context) {
+    final CustomerReportController controller =
+        Get.put(CustomerReportController());
+
     return SafeArea(
       child: Scaffold(
+        appBar: AppBar(
+          title: const CustomAppBar(),
+          backgroundColor: AppColors.white,
+          automaticallyImplyLeading: false,
+        ),
         body: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 20.w),
+          padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 15.h),
           child: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                const CustomAppBar(),
                 SizedBox(
                   height: 72.h,
                   width: 430.w,
@@ -73,41 +89,39 @@ class _CustomerReportScreenState extends State<CustomerReportScreen> {
                 ),
                 Center(
                   child: ProductCard(
-                    imagePath: AppImages.photographer,
-                    title: '21WN Reversible Ring',
-                    subtitle: 'Cardigan',
-                    price: '\$120',
+                    imagePath: product.images?.first ?? AppImages.splash,
+                    title: product.dressTitle ?? 'No title available',
+                    subtitle:
+                        product.category?.join(', ') ?? 'No category available',
+                    price: '\$${product.price}',
                     onTap: () {
-                      Get.toNamed('CustomerProductDetailScreen', arguments: {
-                        'title': '21WN Reversible Ring',
-                        'price': '\$120',
-                      });
+                      // Navigate back to the product detail screen if needed
+                      Get.toNamed('CustomerProductDetailScreen',
+                          arguments: product);
                     },
                   ),
                 ),
                 25.ph,
                 Container(
-                  height: 155.h,
                   decoration: BoxDecoration(
                     color: AppColors.counterColor,
                     borderRadius: BorderRadius.circular(10.r),
                   ),
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 15.w),
-                    child: Column(
-                      children: [
-                        TextField(
-                          decoration: InputDecoration(
-                            hintText: 'Type Reason',
-                            hintStyle: tSStyleBlack14600.copyWith(
-                              color: AppColors.primaryColor,
-                            ),
-                            border: InputBorder.none,
-                            contentPadding: EdgeInsets.symmetric(),
+                  child: Column(
+                    children: [
+                      TextField(
+                        maxLines: 5,
+                        controller: controller.reasonController,
+                        decoration: InputDecoration(
+                          hintText: 'Type Reason',
+                          hintStyle: tSStyleBlack14600.copyWith(
+                            color: AppColors.primaryColor,
                           ),
+                          border: InputBorder.none,
+                          contentPadding: EdgeInsets.all(10),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
                 30.ph,
@@ -117,9 +131,13 @@ class _CustomerReportScreenState extends State<CustomerReportScreen> {
                   child: reusedButton(
                     text: 'REPORT',
                     ontap: () {
-                      showCustomDialog(context,
-                          title: 'Sure you want to report?',
-                          message: 'Are you sure you want to report this?');
+                      showCustomDialogToBlock(context,
+                          title: 'Sure you want to Report?',
+                          message:
+                              'Are you sure you want to report this product?',
+                          onConfirm: () {
+                        controller.reportProduct(context);
+                      });
                     },
                     color: AppColors.red,
                     icon: Icons.east,

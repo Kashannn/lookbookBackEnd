@@ -4,20 +4,20 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lookbook/extension/sizebox_extension.dart';
 import 'package:lookbook/utils/components/constant/app_colors.dart';
 import 'package:lookbook/utils/components/constant/app_textstyle.dart';
-
 import '../../controllers/add_product_controller.dart';
 
-class SizeSelector extends StatefulWidget {
+class AddSizeSelector extends StatefulWidget {
   final AddProductController controller;
 
-  SizeSelector({required this.controller});
+  AddSizeSelector({required this.controller});
 
   @override
-  _SizeSelectorState createState() => _SizeSelectorState();
+  _AddSizeSelectorState createState() => _AddSizeSelectorState();
 }
 
-class _SizeSelectorState extends State<SizeSelector> {
-  String selectedSize = 'S';
+class _AddSizeSelectorState extends State<AddSizeSelector> {
+  // Initially, no size is selected
+  //List<String> selectedSizes = [];
 
   @override
   Widget build(BuildContext context) {
@@ -53,24 +53,31 @@ class _SizeSelectorState extends State<SizeSelector> {
   }
 
   Widget _buildSizeOption(String size) {
-    bool isSelected = size == selectedSize;
+    bool? isSelected;
+    widget.controller.selectedSizes.contains(size) ? isSelected = true : isSelected = false;
+
     return GestureDetector(
       onTap: () {
         setState(() {
-          selectedSize = size;
-          widget.controller.selectedSize.value = size;
+          if (isSelected== true) {
+            widget.controller.selectedSizes.remove(size);  // Remove if already selected
+          } else {
+            widget.controller.selectedSizes.add(size);     // Add if not selected
+          }
         });
+        print(widget.controller.selectedSizes);
+        print(isSelected);
       },
       child: Container(
         padding: EdgeInsets.all(8.w),
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: isSelected ? Colors.black : Colors.grey.shade300,
+          color: isSelected == true ? Colors.black : Colors.grey.shade300,
         ),
         child: Text(
           size,
           style: TextStyle(
-            color: isSelected ? Colors.white : Colors.black,
+            color: isSelected == true ? Colors.white : Colors.black,
             fontSize: 16.sp,
           ),
         ),
@@ -78,4 +85,3 @@ class _SizeSelectorState extends State<SizeSelector> {
     );
   }
 }
-

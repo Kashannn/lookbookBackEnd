@@ -73,13 +73,16 @@ class AddSociallinks extends StatelessWidget {
 
                   if (title.isNotEmpty && link.isNotEmpty) {
                     onAdd(title, link); // Send data back to the parent widget
-                    Get.back(); // Close the modal
+                    Get.back();
+                    controller.titleController.clear();
+                    controller.linkController.clear();// Close the modal
                   }
                 },
                 color: AppColors.secondary,
                 icon: Icons.add_circle_outline_outlined,
               ),
             ),
+            20.ph,
           ],
         ),
       ),

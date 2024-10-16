@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:lookbook/extension/sizebox_extension.dart';
+import 'package:url_launcher/url_launcher.dart';
 
+import '../../../Model/user/user_model.dart';
+import '../../../controllers/admin_customer_detail_controller.dart';
 import '../../../utils/components/Custom_dialog.dart';
 import '../../../utils/components/build_links.dart';
 import '../../../utils/components/constant/app_colors.dart';
@@ -11,131 +16,212 @@ import '../../../utils/components/constant/app_textstyle.dart';
 import '../../../utils/components/custom_app_bar.dart';
 
 class CustomerDetailScreen extends StatefulWidget {
-  const CustomerDetailScreen({super.key});
+  final UserModel customer;
+  CustomerDetailScreen({super.key, required this.customer});
 
   @override
   State<CustomerDetailScreen> createState() => _CustomerDetailScreenState();
 }
 
 class _CustomerDetailScreenState extends State<CustomerDetailScreen> {
+  Future<void> _launchUrl(String url) async {
+    final Uri uri = Uri.parse(url);
+    if (!await launchUrl(uri)) {
+      throw Exception('Could not launch $url');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final AdminCustomerDetailController controller =
+        Get.put(AdminCustomerDetailController(widget.customer));
     return SafeArea(
       child: Scaffold(
-        body: Column(
-          children: [
-            CustomAppBar(),
-            SizedBox(
-              height: 72.h,
-              width: 430.w,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                    'ROBERT FOX',
-                    style: tSStyleBlack18400,
-                  ),
-                  SvgPicture.asset(
-                    AppImages.line,
-                    color: AppColors.text1,
-                  ),
-                ],
+        appBar: AppBar(
+          title: CustomAppBar(),
+          backgroundColor: AppColors.white,
+          automaticallyImplyLeading: false,
+        ),
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              SizedBox(
+                height: 72.h,
+                width: 430.w,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      widget.customer.fullName?.toUpperCase() ?? 'No Name',
+                      style: tSStyleBlack20400,
+                    ),
+                    SvgPicture.asset(
+                      AppImages.line,
+                      color: AppColors.text1,
+                    ),
+                  ],
+                ),
               ),
-            ),
-            10.ph,
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 25.w),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    height: 300.h,
-                    color: Colors.cyan,
-                    child: Image.asset(
-                      AppImages.photographer,
-                      fit: BoxFit.cover,
+              10.ph,
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 25.w),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      height: 300.h,
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10.r),
+                        color: AppColors.secondary.withOpacity(0.5),
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(10.r),
+                        child: widget.customer.imageUrl != null &&
+                                widget.customer.imageUrl!.isNotEmpty
+                            ? Image.network(
+                                widget.customer.imageUrl!,
+                                fit: BoxFit.fitWidth,
+                              )
+                            : Container(
+                                width: double.infinity,
+                                height: double.infinity,
+                                color: AppColors.secondary.withOpacity(0.5),
+                                child: Center(
+                                  child: Text(
+                                    controller.getInitials(
+                                        widget.customer.fullName ?? ''),
+                                    style: tSStyleBlack20400.copyWith(
+                                      color: AppColors.white,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                      ),
                     ),
-                  ),
-                  19.ph,
-                  SizedBox(
-                    height: 285.h,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        Text(
-                          'JHONE',
-                          style: tSStyleBlack16400,
-                        ),
-                        Text(
-                          'We work with monitoring programmes to ensure compliance with safety, health and quality standards for our products.',
-                          style: tSStyleBlack12400.copyWith(
-                            color: AppColors.text1,
-                          ),
-                        ),
-                        Text(
-                          'Phone Number',
-                          style: tSStyleBlack16400,
-                        ),
-                        BuildLinks(
-                          image: AppImages.phone,
-                          ontap: () {},
-                          text: '+49 40 60774609',
-                        ),
-                        Text(
-                          'Email',
-                          style: tSStyleBlack16400,
-                        ),
-                        BuildLinks(
-                          image: AppImages.mail,
-                          ontap: () {},
-                          text: 'info@eternal-vitality.de',
-                        ),
-                        Text(
-                          'Instagram',
-                          style: tSStyleBlack16400,
-                        ),
-                        BuildLinks(
-                          image: AppImages.social,
-                          ontap: () {},
-                          text: '@Instagram/customer',
-                        ),
-                      ],
+                    19.ph,
+                    Text(
+                      'About',
+                      style: tSStyleBlack16500,
+                      textAlign: TextAlign.justify,
                     ),
-                  ),
-                  20.ph,
-                  SizedBox(
-                    height: 42.h,
-                    width: 162.w,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        showCustomDialog(context,
-                            title: 'Sure you want to block?',
-                            message: 'Are you sure you want to block this?');
+                    10.ph,
+                    Text(
+                      widget.customer.about ?? 'No information available',
+                      style: tSStyleBlack12400.copyWith(
+                        color: AppColors.text1,
+                      ),
+                      textAlign: TextAlign.justify,
+                    ),
+                    10.ph,
+                    Text(
+                      'Phone Number',
+                      style: tSStyleBlack16400,
+                    ),
+                    10.ph,
+                    BuildLinks(
+                      image: AppImages.phone,
+                      ontap: () async {
+                        await launchUrl(Uri(
+                          scheme: 'tel',
+                          path: widget.customer.phone,
+                        ));
                       },
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text('Block'),
-                          Icon(
-                            Icons.east,
-                            color: AppColors.white,
-                            size: 18,
-                          ),
-                        ],
+                      text: widget.customer.phone ?? 'No phone number',
+                    ),
+                    10.ph,
+                    Text(
+                      'Email',
+                      style: tSStyleBlack16400,
+                    ),
+                    10.ph,
+                    BuildLinks(
+                      image: AppImages.mail,
+                      ontap: () async {
+                        await _launchUrl('mailto:${widget.customer.email}');
+                      },
+                      text: widget.customer.email ?? 'No email',
+                    ),
+                    10.ph,
+                    if (widget.customer.socialLinks.isNotEmpty) ...[
+                      Text(
+                        'Social Links',
+                        style: tSStyleBlack16400,
                       ),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.red,
-                        foregroundColor: AppColors.white,
+                      10.ph,
+                      ...widget.customer.socialLinks.map((socialLink) {
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              socialLink['title'] ?? 'No title',
+                              style: tSStyleBlack16400,
+                            ),
+                            10.ph,
+                            InkWell(
+                              onTap: () {
+                                _launchUrl(socialLink['link'] ?? '');
+                              },
+                              child: Row(
+                                children: [
+                                  controller
+                                      .getSocialIcon(socialLink['link'] ?? ''),
+                                  10.pw,
+                                  Expanded(
+                                    child: Text(
+                                      socialLink['link'] ?? 'No link',
+                                      style: oStyleBlack14300.copyWith(
+                                        color: AppColors.text2,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            10.ph,
+                          ],
+                        );
+                      }).toList(),
+                    ],
+                    20.ph,
+                    SizedBox(
+                      height: 42.h,
+                      width: 162.w,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          showCustomDialogToBlock(context,
+                              title: 'Sure you want to block?',
+                              message:
+                                  'Are you sure you want to block this user?',
+                              onConfirm: () {
+                            controller.blockUser(widget.customer);
+                          });
+                        },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text('Block'),
+                            Icon(
+                              Icons.east,
+                              color: AppColors.white,
+                              size: 18,
+                            ),
+                          ],
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.red,
+                          foregroundColor: AppColors.white,
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                    20.ph,
+                  ],
+                ),
               ),
-            )
-          ],
+            ],
+          ),
         ),
       ),
     );

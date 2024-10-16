@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:lookbook/Model/Chat/reports_model.dart';
 import 'package:lookbook/extension/sizebox_extension.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../views/Admin/Reports/Message_report_screen.dart';
@@ -9,13 +10,15 @@ import '../../views/Designer/designer_message_report_screen.dart';
 import 'constant/app_colors.dart';
 import 'constant/app_textstyle.dart';
 
+import 'package:flutter/material.dart';
+import 'package:shimmer/shimmer.dart';
+
 class ProductCard extends StatelessWidget {
   final String imagePath;
   final String title;
   final String subtitle;
   final String price;
   final VoidCallback onTap;
-
   const ProductCard({
     Key? key,
     required this.imagePath,
@@ -32,15 +35,68 @@ class ProductCard extends StatelessWidget {
       child: Column(
         children: [
           Container(
-            height: 226.h,
+            // height: 226.h,
             width: 187.w,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10.r),
               color: AppColors.primaryColor,
-              image: DecorationImage(
-                image: AssetImage(imagePath),
-                fit: BoxFit.cover,
-              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Color(0x29000000),
+                  blurRadius: 4.0,
+                  spreadRadius: 0.0,
+                  offset: Offset(0.0, 4.0),
+                ),
+              ],
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(10.r),
+              child: imagePath.isNotEmpty
+                  ? Image.network(
+                      imagePath,
+                      fit: BoxFit.cover,
+                      width: 187.w,
+                      height: 226.h,
+                      loadingBuilder: (context, child, loadingProgress) {
+                        if (loadingProgress == null) {
+                          return child;
+                        }
+                        return Shimmer.fromColors(
+                          baseColor: Colors.grey[300]!,
+                          highlightColor: Colors.grey[100]!,
+                          child: Container(
+                            width: 187.w,
+                            height: 226.h,
+                            color: Colors.white,
+                          ),
+                        );
+                      },
+                      errorBuilder: (context, error, stackTrace) {
+                        return Container(
+                          width: 187.w,
+                          color: Colors.grey,
+                          child: Center(
+                            child: Icon(
+                              Icons.broken_image,
+                              color: Colors.grey,
+                            ),
+                          ),
+                        );
+                      },
+                    )
+                  : Container(
+                      width: 187.w,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10.r),
+                        color: Colors.grey,
+                      ),
+                      child: Center(
+                        child: Icon(
+                          Icons.image,
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ),
             ),
           ),
           10.ph,
@@ -168,7 +224,6 @@ class ProductCard2 extends StatelessWidget {
                       height: 180.h,
                       loadingBuilder: (context, child, loadingProgress) {
                         if (loadingProgress == null) {
-                          // Image fully loaded
                           return child;
                         }
                         return Shimmer.fromColors(
@@ -210,7 +265,7 @@ class ProductCard2 extends StatelessWidget {
                         topLeft: Radius.circular(10.r),
                         topRight: Radius.circular(10.r),
                       ),
-                      color: Colors.grey, // Fallback color if no image path
+                      color: Colors.grey,
                     ),
                     child: Center(
                       child: Icon(
@@ -259,10 +314,10 @@ class ProductCard2 extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    10.ph,
                     Text(
                       title,
                       style: tSStyleBlack14400,
+                      maxLines: 1,
                     ),
                     Padding(
                       padding:
@@ -270,6 +325,7 @@ class ProductCard2 extends StatelessWidget {
                       child: Text(
                         subtitle,
                         style: tSStyleBlack10400,
+                        maxLines: 1,
                       ),
                     ),
                     Text(
@@ -290,7 +346,8 @@ class ProductCard2 extends StatelessWidget {
   }
 }
 
-void showCustomPopupMenu(BuildContext context, Offset position) {
+void showCustomPopupMenu(
+    BuildContext context, Offset position, ReportsModel model) {
   final RenderBox overlay =
       Overlay.of(context).context.findRenderObject() as RenderBox;
 
@@ -343,7 +400,9 @@ void showCustomPopupMenu(BuildContext context, Offset position) {
     ],
   ).then((value) {
     if (value == 'report') {
-      Get.to(() => DesignerMessageReportScreen());
+      Get.to(() => DesignerMessageReportScreen(
+            reportsModel: model,
+          ));
     }
   });
 }

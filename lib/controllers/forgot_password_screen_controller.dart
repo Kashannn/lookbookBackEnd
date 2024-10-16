@@ -4,12 +4,12 @@ import 'package:get/get.dart';
 import '../Firebase/firebase_authentication_services.dart';
 import '../utils/validations/validator.dart';
 
-
 class ForgotPasswordController extends GetxController {
   final forgotPasswordController = TextEditingController();
   final emailErrorText = ''.obs;
   final isButtonActive = false.obs;
-  final FirebaseAuthenticationServices _authService = Get.put(FirebaseAuthenticationServices());
+  final FirebaseAuthenticationServices _authService =
+      Get.put(FirebaseAuthenticationServices());
 
   @override
   void onInit() {
@@ -47,12 +47,18 @@ class ForgotPasswordController extends GetxController {
 
   void submit() async {
     if (isButtonActive.value) {
-      bool result = await _authService.forgetPassword(forgotPasswordController.text.trim());
+      bool result = await _authService .forgetPassword(forgotPasswordController.text.trim());
+      clearForm();
       if (result) {
         Get.back();
         Get.toNamed('signin');
       }
     }
   }
-}
 
+  void clearForm() {
+    forgotPasswordController.clear();
+    emailErrorText.value = '';
+    isButtonActive.value = false;
+  }
+}

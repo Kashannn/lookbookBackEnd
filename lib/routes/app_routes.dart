@@ -8,7 +8,6 @@ import 'package:lookbook/views/authentication/sign_up_screen.dart';
 import 'package:lookbook/views/designer/addproduct_screen1.dart';
 import 'package:lookbook/views/designer/product_detail.dart';
 import 'package:lookbook/views/welcomeScreen.dart';
-
 import '../utils/components/Customer_custom_menu.dart';
 import '../utils/components/admin_custom_menu.dart';
 import '../utils/components/designer_custom_menu.dart';
@@ -75,11 +74,11 @@ class AppRoutes {
     ),
     GetPage(
       name: '/CustomerProductDetailScreen',
-      page: () => const CustomerProductDetailScreen(),
+      page: () =>  CustomerProductDetailScreen(),
     ),
     GetPage(
       name: '/AdminCustomMenu',
-      page: () => const AdminCustomMenu(),
+      page: () =>  AdminCustomMenu(),
     ),
     GetPage(
       name: '/AdminProfileScreen',
@@ -87,49 +86,49 @@ class AppRoutes {
     ),
     GetPage(
       name: '/AdminAllConversationScreen',
-      page: () => const AdminAllConversationScreen(),
+      page: () => AdminAllConversationScreen(),
     ),
     GetPage(
       name: '/AdminNotificationScreen',
-      page: () => const AdminNotificationScreen(),
+      page: () =>  AdminNotificationScreen(),
     ),
     GetPage(
       name: '/CustomerCustomMenu',
-      page: () => const CustomerCustomMenu(),
+      page: () =>  CustomerCustomMenu(),
     ),
     GetPage(
       name: '/CustomerProfileScreen',
       page: () => const CustomerProfileScreen(),
     ),
-    GetPage(
-      name: '/CustomerMessageChatScreen',
-      page: () => const CustomerMessageChatScreen(),
-    ),
+    // GetPage(
+    //   name: '/CustomerMessageChatScreen',
+    //   page: () => const CustomerMessageChatScreen(),
+    // ),
     GetPage(
       name: '/CustomerNotificationScreen',
       page: () => const CustomerNotificationScreen(),
     ),
     GetPage(
       name: '/DesignerCustomMenu',
-      page: () => const DesignerCustomMenu(),
+      page: () =>  DesignerCustomMenu(),
     ),
-    GetPage(
-      name: '/DesignerMessageChatScreen',
-      page: () => const DesignerMessageChatScreen(),
-    ),
+    // GetPage(
+    //   name: '/DesignerMessageChatScreen',
+    //   page: () => const DesignerMessageChatScreen(),
+    // ),
 
 
     GetPage(
       name: '/ProfileScreen',
       page: () =>  ProfileScreen(),
     ),
-    GetPage(
-      name: '/DesignerNotificationScreen',
-      page: () => const DesignerNotificationScreen(),
-    ),
+    // GetPage(
+    //   name: '/DesignerNotificationScreen',
+    //   page: () => const DesignerNotificationScreen(),
+    // ),
     GetPage(
       name: '/RemoveProductScreen',
-      page: () => const RemoveProductScreen(),
+      page: () => RemoveProductScreen(),
     ),
 
 

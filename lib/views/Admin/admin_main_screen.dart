@@ -17,9 +17,11 @@ class AdminMainScreen extends StatelessWidget {
     return SafeArea(
       child: Scaffold(
         backgroundColor: AppColors.white,
+        appBar: AppBar(
+          title: const AdminDashboardCustomAppBar(),
+        ),
         body: Column(
           children: [
-            const AdminDashboardCustomAppBar(),
             Flexible(
               child: PageView(
                 controller: bottomNavController.pageController,

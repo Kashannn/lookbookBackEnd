@@ -8,9 +8,16 @@ import 'package:lookbook/utils/components/constant/app_colors.dart';
 import 'package:lookbook/utils/components/constant/app_images.dart';
 import 'package:lookbook/utils/components/constant/app_textstyle.dart';
 
-class WelcomeScreen extends StatelessWidget {
+import '../Notification/notification.dart';
+
+class WelcomeScreen extends StatefulWidget {
   WelcomeScreen({super.key});
 
+  @override
+  State<WelcomeScreen> createState() => _WelcomeScreenState();
+}
+
+class _WelcomeScreenState extends State<WelcomeScreen> {
   final WelcomeController _controller = Get.put(WelcomeController());
 
   final List<String> imageList = [
@@ -18,6 +25,19 @@ class WelcomeScreen extends StatelessWidget {
     AppImages.splash1,
     AppImages.splash2,
   ];
+
+  NotificationService notificationService = NotificationService();
+
+  @override
+  void initState() {
+    super.initState();
+    notificationService.firebaseInit(context);
+    notificationService.isTokenRefresh();
+    notificationService.requestNotificationPermission();
+    notificationService.getToken().then((value) {
+      print('Token: $value');
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -82,21 +102,24 @@ class WelcomeScreen extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.secondary,
-                            shadowColor: Colors.transparent,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(100.r),
+                        SizedBox(
+                          height: 52.h,
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColors.secondary,
+                              shadowColor: Colors.transparent,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(100.r),
+                              ),
                             ),
-                          ),
-                          onPressed: () {
-                            Get.toNamed('signin');
-                          },
-                          child: Text(
-                            'Continue',
-                            style: tSStyleBlack18400.copyWith(
-                              color: AppColors.white,
+                            onPressed: () {
+                              Get.toNamed('signin');
+                            },
+                            child: Text(
+                              'Continue',
+                              style: tSStyleBlack18400.copyWith(
+                                color: AppColors.white,
+                              ),
                             ),
                           ),
                         ),

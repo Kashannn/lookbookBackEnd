@@ -5,7 +5,6 @@ import 'package:lookbook/extension/sizebox_extension.dart';
 import 'package:lookbook/utils/components/constant/app_colors.dart';
 import 'package:lookbook/utils/components/constant/app_textstyle.dart';
 
-// ignore: must_be_immutable
 class BuildLinks extends StatelessWidget {
   String image;
   final Callback ontap;

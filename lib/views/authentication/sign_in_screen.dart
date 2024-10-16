@@ -7,13 +7,10 @@ import 'package:lookbook/utils/components/constant/app_colors.dart';
 import 'package:lookbook/utils/components/constant/app_textstyle.dart';
 import 'package:lookbook/utils/components/reusedbutton.dart';
 import 'package:lookbook/utils/components/textfield.dart';
-import 'package:lookbook/views/Admin/admin_main_screen.dart';
 
 import '../../Model/user/user_model.dart';
 import '../../utils/components/constant/app_images.dart';
 import '../../utils/components/socialbuttons.dart';
-import '../Customer/customer_main_screen.dart';
-import '../Designer/designer_main_screen.dart';
 import 'forgot_password_screen.dart';
 
 class SignInScreen extends StatelessWidget {
@@ -91,38 +88,6 @@ class SignInScreen extends StatelessWidget {
                 ),
               ),
               10.ph,
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  ElevatedButton(
-                    onPressed: () {
-                      Get.to(() => AdminMainScreen());
-                    },
-                    style: ElevatedButton.styleFrom(
-                        foregroundColor: Colors.white,
-                        backgroundColor: AppColors.secondary),
-                    child: Text('Admin'),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      Get.to(() => CustomerMainScreen());
-                    },
-                    style: ElevatedButton.styleFrom(
-                        foregroundColor: Colors.white,
-                        backgroundColor: AppColors.secondary),
-                    child: Text('Customer'),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      Get.to(() => DesignerMainScreen());
-                    },
-                    style: ElevatedButton.styleFrom(
-                        foregroundColor: Colors.white,
-                        backgroundColor: AppColors.secondary),
-                    child: Text('Designer'),
-                  ),
-                ],
-              ),
               Padding(
                 padding: EdgeInsets.symmetric(
                   horizontal: 24.0.w,
@@ -150,7 +115,7 @@ class SignInScreen extends StatelessWidget {
                       style: tSStyleBlack16400,
                     ),
                     10.ph,
-                    textfield(
+                    TextFieldWithEyeIcon(
                       text: 'Type Password',
                       toHide: true,
                       controller: controller.passwordController,
@@ -258,15 +223,17 @@ class SignInScreen extends StatelessWidget {
                       children: [
                         socialbuttons(
                           image: AppImages.googlelogo,
-                          ontap: () {},
+                          ontap: () {
+                            controller.loginWithGoogle();
+                          },
                         ),
-                        SizedBox(
-                          width: 22.0.w,
-                        ),
-                        socialbuttons(
-                          image: AppImages.applelogo,
-                          ontap: () {},
-                        ),
+                        // SizedBox(
+                        //   width: 22.0.w,
+                        // ),
+                        // socialbuttons(
+                        //   image: AppImages.applelogo,
+                        //   ontap: () {},
+                        // ),
                       ],
                     ),
                   ],

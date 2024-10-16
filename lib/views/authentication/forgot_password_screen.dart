@@ -57,15 +57,19 @@ class ForgotPasswordScreen extends StatelessWidget {
               ),
               20.ph,
               Obx(
-                () => reusedButton(
-                  icon: Icons.arrow_forward_outlined,
-                  text: 'CONTINUE',
-                  ontap: controller.isButtonActive.value
-                      ? controller.submit
-                      : null,
-                  color: controller.isButtonActive.value
-                      ? AppColors.secondary
-                      : AppColors.greylight,
+                () => SizedBox(
+                  height: 58.h,
+                  width: double.infinity,
+                  child: reusedButton(
+                    icon: Icons.arrow_forward_outlined,
+                    text: 'CONTINUE',
+                    ontap: controller.isButtonActive.value
+                        ? controller.submit
+                        : null,
+                    color: controller.isButtonActive.value
+                        ? AppColors.secondary
+                        : AppColors.greylight,
+                  ),
                 ),
               ),
             ],

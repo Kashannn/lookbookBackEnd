@@ -3,7 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 
-
 import 'app_colors.dart';
 
 class CustomSnackBars {
@@ -28,7 +27,7 @@ class CustomSnackBars {
       message,
       duration: Duration(seconds: duration),
       margin: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 12.0),
-      backgroundColor: const Color(0xFF35005C),
+      backgroundColor: AppColors.secondary,
       colorText: Colors.white,
       leftBarIndicatorColor: const Color(0xFFFF9F00),
       progressIndicatorBackgroundColor: AppColors.primaryColor,
@@ -43,7 +42,7 @@ class CustomSnackBars {
           color: Colors.black.withOpacity(0.2),
           spreadRadius: 1,
           blurRadius: 8,
-          offset: Offset(0, 3), // changes position of shadow
+          offset: Offset(0, 3),
         ),
       ],
       mainButton: TextButton(
@@ -93,7 +92,7 @@ class CustomSnackBars {
       message,
       duration: Duration(seconds: duration),
       margin: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 12.0),
-      backgroundColor: const Color(0xFF35005C),
+      backgroundColor: AppColors.secondary,
       colorText: Colors.white,
       leftBarIndicatorColor: AppColors.primaryColor,
       progressIndicatorBackgroundColor: AppColors.secondary,
@@ -108,14 +107,15 @@ class CustomSnackBars {
           color: Colors.black.withOpacity(0.2),
           spreadRadius: 1,
           blurRadius: 8,
-          offset: Offset(0, 3), // changes position of shadow
+          offset: Offset(0, 3),
         ),
       ],
       mainButton: TextButton(
         onPressed: () => Get.back(),
         child: Text(
           'Dismiss',
-          style: TextStyle(color:AppColors.secondary, fontWeight: FontWeight.bold),
+          style: TextStyle(
+              color: AppColors.primaryColor, fontWeight: FontWeight.bold),
         ),
       ),
       icon: Icon(Icons.warning, color: AppColors.primaryColor, size: 30.0),

@@ -4,12 +4,21 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:lookbook/extension/sizebox_extension.dart';
 
+import '../../../controllers/admin_chat_controller.dart';
 import '../../../utils/components/constant/app_colors.dart';
 import '../../../utils/components/constant/app_images.dart';
 import '../../../utils/components/constant/app_textstyle.dart';
 import '../../../utils/components/custom_app_bar.dart';
 import '../../../utils/components/custom_search_bar.dart';
 import 'message-chat_screen.dart';
+
+import 'package:shimmer/shimmer.dart';
+
+import '../../../Model/Chat/chat_room_model.dart';
+
+import '../../../Model/user/user_model.dart';
+
+import 'package:flutter_svg/flutter_svg.dart';
 
 class AdminAllconversationScreen2 extends StatefulWidget {
   const AdminAllconversationScreen2({super.key});
@@ -21,20 +30,20 @@ class AdminAllconversationScreen2 extends StatefulWidget {
 
 class _AdminAllconversationScreen2State
     extends State<AdminAllconversationScreen2> {
+  final AdminChatController controller = Get.put(AdminChatController());
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
         body: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            20.ph,
             SizedBox(
               height: 72.h,
               width: 430.w,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
                     'C O N V E R S A T I O N S',
@@ -47,80 +56,391 @@ class _AdminAllconversationScreen2State
                 ],
               ),
             ),
-            10.ph,
+            SizedBox(height: 10.h),
             SizedBox(
               height: 43.h,
               width: 385.w,
-              child: CustomSearchBar(),
+              child: CustomSearchBar3(
+                searchController: controller.searchController,
+              ),
             ),
-            20.ph,
-            SizedBox(
-              width: 385.w,
-              height: 78.h,
-              child: InkWell(
-                onTap: () {
-                  Get.to(() => const MessageChatScreen());
-                },
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFF8F9FE),
-                    borderRadius: BorderRadius.circular(10.r),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Row(
-                          children: [
-                            CircleAvatar(
-                              radius: 30.0.r,
-                              backgroundColor: Colors.transparent,
-                              child: ClipOval(
-                                child: Image.asset(
-                                  AppImages.noti,
-                                  fit: BoxFit.cover,
-                                  width: 60.0.w,
-                                  height: 60.0.h,
+            SizedBox(height: 20.h),
+            Expanded(
+              child: Obx(() {
+                if (controller.isLoading.value) {
+                  return Center(child: CircularProgressIndicator());
+                }
+                if (controller.error.isNotEmpty) {
+                  return Center(child: Text('Error: ${controller.error}'));
+                }
+                if (controller.filteredChatRooms.isEmpty) {
+                  return Center(
+                    child: Text(
+                      controller.searchQuery.value.isEmpty
+                          ? 'NO CHATS TO SHOW'
+                          : 'NO CHATS MATCHING YOUR SEARCH',
+                      style: tSStyleBlack16400,
+                    ),
+                  );
+                }
+
+                return ListView.builder(
+                  itemCount: controller.filteredChatRooms.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    ChatRoomModel chatRoom =
+                        controller.filteredChatRooms[index];
+                    List<String> userIds = chatRoom.participants!.keys.toList();
+
+                    if (userIds.length < 2) {
+                      return SizedBox();
+                    }
+
+                    return FutureBuilder<List<UserModel?>>(
+                      future: Future.wait(userIds.map((userId) => controller
+                          .firebaseCustomerEndServices
+                          .fetchUser(userId))),
+                      builder: (context, userSnapshot) {
+                        String getInitials(String name) {
+                          List<String> nameParts = name.split(' ');
+                          if (nameParts.length >= 2) {
+                            return nameParts[0][0] + nameParts[1][0];
+                          } else if (nameParts.isNotEmpty) {
+                            return nameParts[0][0];
+                          }
+                          return '';
+                        }
+
+                        if (userSnapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return ListTile(
+                            title: Center(
+                              child: Text('Loading...'),
+                            ),
+                          );
+                        }
+
+                        if (!userSnapshot.hasData ||
+                            userSnapshot.data!.contains(null)) {
+                          return ListTile(
+                            title: Center(
+                              child: Text('User data not found'),
+                            ),
+                          );
+                        }
+
+                        UserModel user1 = userSnapshot.data![0]!;
+                        UserModel user2 = userSnapshot.data![1]!;
+                        return Padding(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 18.0.w, vertical: 10.h),
+                          child: SizedBox(
+                            child: InkWell(
+                              onTap: () async {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => MessageChatScreen(
+                                      chatroom: chatRoom,
+                                      user1: user1,
+                                      user2: user2, // Pass customer ID
+                                      // Pass customer data
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10.r),
+                                  color: const Color(0xFFF8F9FE),
+                                  // Customize container color if needed
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Stack(
+                                            children: [
+                                              Padding(
+                                                padding:
+                                                    EdgeInsets.only(left: 20),
+                                                child: CircleAvatar(
+                                                  backgroundColor:
+                                                      Colors.transparent,
+                                                  child: ClipOval(
+                                                    child: user2.imageUrl !=
+                                                                null &&
+                                                            user2.imageUrl!
+                                                                .isNotEmpty
+                                                        ? Image.network(
+                                                            user2.imageUrl!,
+                                                            fit: BoxFit.cover,
+                                                            width: 60.0.w,
+                                                            height: 60.0.h,
+                                                            loadingBuilder:
+                                                                (context, child,
+                                                                    loadingProgress) {
+                                                              if (loadingProgress ==
+                                                                  null)
+                                                                return child;
+                                                              return Shimmer
+                                                                  .fromColors(
+                                                                baseColor:
+                                                                    Colors.grey[
+                                                                        300]!,
+                                                                highlightColor:
+                                                                    Colors.grey[
+                                                                        100]!,
+                                                                child:
+                                                                    Container(
+                                                                  width: 60.0.w,
+                                                                  height:
+                                                                      60.0.h,
+                                                                  decoration:
+                                                                      BoxDecoration(
+                                                                    color: AppColors
+                                                                        .secondary
+                                                                        .withOpacity(
+                                                                            0.5),
+                                                                    shape: BoxShape
+                                                                        .circle,
+                                                                  ),
+                                                                ),
+                                                              );
+                                                            },
+                                                            errorBuilder:
+                                                                (context, error,
+                                                                    stackTrace) {
+                                                              return Container(
+                                                                width: 60.0.w,
+                                                                height: 60.0.h,
+                                                                decoration:
+                                                                    BoxDecoration(
+                                                                  color: AppColors
+                                                                      .secondary
+                                                                      .withOpacity(
+                                                                          0.5),
+                                                                  shape: BoxShape
+                                                                      .circle,
+                                                                ),
+                                                                child: Center(
+                                                                  child: Text(
+                                                                    getInitials(
+                                                                        user2.fullName ??
+                                                                            ''),
+                                                                    style: tSStyleBlack18500
+                                                                        .copyWith(
+                                                                      color: AppColors
+                                                                          .white,
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              );
+                                                            },
+                                                          )
+                                                        : Container(
+                                                            width: 60.0.w,
+                                                            height: 60.0.h,
+                                                            decoration:
+                                                                BoxDecoration(
+                                                              color: AppColors
+                                                                  .secondary
+                                                                  .withOpacity(
+                                                                      0.5),
+                                                              shape: BoxShape
+                                                                  .circle,
+                                                            ),
+                                                            child: Center(
+                                                              child: Text(
+                                                                getInitials(
+                                                                    user2.fullName ??
+                                                                        ''),
+                                                                style:
+                                                                    tSStyleBlack18500
+                                                                        .copyWith(
+                                                                  color:
+                                                                      AppColors
+                                                                          .white,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                  ),
+                                                ),
+                                              ),
+                                              CircleAvatar(
+                                                backgroundColor:
+                                                    Colors.transparent,
+                                                child: ClipOval(
+                                                  child: user1.imageUrl !=
+                                                              null &&
+                                                          user1.imageUrl!
+                                                              .isNotEmpty
+                                                      ? Image.network(
+                                                          user1.imageUrl!,
+                                                          fit: BoxFit.cover,
+                                                          width: 60.0.w,
+                                                          height: 60.0.h,
+                                                          loadingBuilder: (context,
+                                                              child,
+                                                              loadingProgress) {
+                                                            if (loadingProgress ==
+                                                                null)
+                                                              return child;
+                                                            return Shimmer
+                                                                .fromColors(
+                                                              baseColor: Colors
+                                                                  .grey[300]!,
+                                                              highlightColor:
+                                                                  Colors.grey[
+                                                                      100]!,
+                                                              child: Container(
+                                                                width: 60.0.w,
+                                                                height: 60.0.h,
+                                                                decoration:
+                                                                    BoxDecoration(
+                                                                  color: AppColors
+                                                                      .secondary
+                                                                      .withOpacity(
+                                                                          0.5),
+                                                                  shape: BoxShape
+                                                                      .circle,
+                                                                ),
+                                                              ),
+                                                            );
+                                                          },
+                                                          errorBuilder:
+                                                              (context, error,
+                                                                  stackTrace) {
+                                                            return Container(
+                                                              width: 60.0.w,
+                                                              height: 60.0.h,
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                color: AppColors
+                                                                    .secondary
+                                                                    .withOpacity(
+                                                                        0.5),
+                                                                shape: BoxShape
+                                                                    .circle,
+                                                              ),
+                                                              child: Center(
+                                                                child: Text(
+                                                                  getInitials(
+                                                                      user1.fullName ??
+                                                                          ''),
+                                                                  style: tSStyleBlack18500
+                                                                      .copyWith(
+                                                                    color: AppColors
+                                                                        .white,
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            );
+                                                          },
+                                                        )
+                                                      : Container(
+                                                          width: 60.0.w,
+                                                          height: 60.0.h,
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            color: AppColors
+                                                                .secondary
+                                                                .withOpacity(
+                                                                    0.5),
+                                                            shape:
+                                                                BoxShape.circle,
+                                                          ),
+                                                          child: Center(
+                                                            child: Text(
+                                                              getInitials(user1
+                                                                      .fullName ??
+                                                                  ''),
+                                                              style:
+                                                                  tSStyleBlack18500
+                                                                      .copyWith(
+                                                                color: AppColors
+                                                                    .white,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          SizedBox(width: 15.0.w),
+                                          Container(
+                                            constraints:
+                                                BoxConstraints(maxWidth: 270.w),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Text(
+                                                  '${user1.fullName} & ${user2.fullName}',
+                                                  style:
+                                                      iStyleBlack13700.copyWith(
+                                                    color: AppColors.text3,
+                                                  ),
+                                                  overflow: TextOverflow
+                                                      .ellipsis, // Show ellipsis if it overflows
+                                                ),
+                                                chatRoom.lastMessage != ''
+                                                    ? FittedBox(
+                                                        // Allow the text to scale
+                                                        child: Text(
+                                                          chatRoom.lastMessage!,
+                                                          style:
+                                                              iStyleBlack13500
+                                                                  .copyWith(
+                                                            color:
+                                                                AppColors.text2,
+                                                          ),
+                                                          maxLines: 1,
+                                                          overflow: TextOverflow
+                                                              .ellipsis, // Show ellipsis if it overflows
+                                                        ),
+                                                      )
+                                                    : SizedBox.shrink(),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      Icon(
+                                        Icons.arrow_forward_outlined,
+                                        size: 25.sp,
+                                        color: const Color(0xFFE47F46),
+                                      )
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
-                            15.pw,
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  'Jhone  Lane & Jone LIsa',
-                                  style: iStyleBlack13700.copyWith(
-                                    color: AppColors.text3,
-                                  ),
-                                ),
-                                Text(
-                                  'Stand up for what you believe in',
-                                  style: iStyleBlack13700.copyWith(
-                                    color: AppColors.text2,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                        Icon(
-                          Icons.arrow_forward_outlined,
-                          size: 25.sp,
-                          color: const Color(0xFFE47F46),
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            )
+                          ),
+                        );
+                      },
+                    );
+                  },
+                );
+              }),
+            ),
+            SizedBox(height: 20.h),
           ],
         ),
       ),
     );
+  }
+
+  String getUserNameFromId(String userId) {
+    return '';
   }
 }

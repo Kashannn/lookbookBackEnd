@@ -55,8 +55,7 @@ class ValidationService {
     required String category,
     required String price,
     required String description,
-    required String phone,
-    required String email,
+    required String barCode,
   }) {
     final errors = <String, String?>{};
 
@@ -69,12 +68,10 @@ class ValidationService {
     if (description.isEmpty) {
       errors['description'] = "Product Description can't be empty";
     }
-    if (phone.isEmpty) {
+    if (barCode.isEmpty) {
       errors['phone'] = "Phone Number can't be empty";
     }
-    if (email.isEmpty) {
-      errors['email'] = "Email can't be empty";
-    }
+
 
     return errors;
   }

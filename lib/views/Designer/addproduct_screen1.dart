@@ -5,26 +5,26 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:lookbook/controllers/add_product_controller.dart';
 import 'package:lookbook/extension/sizebox_extension.dart';
+import 'package:lookbook/utils/components/add_size_selector.dart';
 import 'package:lookbook/utils/components/constant/app_textstyle.dart';
 import 'package:lookbook/utils/components/custom_app_bar.dart';
 import 'package:lookbook/utils/components/reusedbutton.dart';
 import 'package:lookbook/utils/components/textfield.dart';
+import 'package:table_calendar/table_calendar.dart';
 import '../../controllers/add_category_controller.dart';
 import '../../utils/components/add_category_bottomSheet.dart';
 import '../../utils/components/add_socialLinks.dart';
 import '../../utils/components/colorPicker.dart';
 import '../../utils/components/constant/app_colors.dart';
 import '../../utils/components/constant/app_images.dart';
-import '../../utils/components/size_Selector.dart';
+import '../../utils/components/edit_size_selector.dart';
 import '../designer/add_photographer_screen.dart';
 
 class AddproductScreen1 extends StatelessWidget {
   AddproductScreen1({super.key});
-
   final AddProductController controller = Get.put(AddProductController());
   final AddCategoryController categoryController =
       Get.put(AddCategoryController());
-
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -45,7 +45,7 @@ class AddproductScreen1 extends StatelessWidget {
               Center(
                 child: Text(
                   'A D D  P R O D U C T',
-                  style: tSStyleBlack18600,
+                  style: tSStyleBlack18400,
                 ),
               ),
               10.ph,
@@ -186,6 +186,21 @@ class AddproductScreen1 extends StatelessWidget {
                         }
                       }),
                       30.ph,
+                      // Text(
+                      //   'Designer Name',
+                      //   style: tSStyleBlack16600.copyWith(
+                      //     color: AppColors.primaryColor,
+                      //   ),
+                      // ),
+                      // 10.ph,
+                      // textfield(
+                      //   text: 'Type',
+                      //   toHide: false,
+                      //   controller: controller.designerNameController,
+                      //   focusNode: controller.designerNameFocusNode,
+                      //   nextFocusNode: controller.categoryFocusNode,
+                      // ),
+                      // 15.ph,
                       Text(
                         'Category',
                         style: tSStyleBlack16600.copyWith(
@@ -197,8 +212,8 @@ class AddproductScreen1 extends StatelessWidget {
                         if (categoryController.categories.isEmpty) {
                           return Text("No categories available");
                         }
+
                         return DropdownButtonFormField<String>(
-                          style: tSStyleBlack16400,
                           decoration: InputDecoration(
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(30.0),
@@ -214,18 +229,42 @@ class AddproductScreen1 extends StatelessWidget {
                               ),
                             ),
                           ),
-                          hint: Text("Select a Category",
-                              style: TextStyle(
-                                color: AppColors.greylight,
-                              )),
-                          value: controller.selectedCategory.value.isNotEmpty
+                          hint: Text(
+                            "Select a Category",
+                            style: TextStyle(
+                              color: AppColors.greylight,
+                            ),
+                          ),
+                          value: categoryController.categories
+                                  .contains(controller.selectedCategory.value)
                               ? controller.selectedCategory.value
                               : null,
-                          items: categoryController.categories
-                              .map((String category) {
+                          selectedItemBuilder: (BuildContext context) {
+                            return categoryController.categories
+                                .map<Widget>((String category) {
+                              return Text(category);
+                            }).toList();
+                          },
+                          items: categoryController.categories.map((category) {
                             return DropdownMenuItem<String>(
                               value: category,
-                              child: Text(category),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(category), // Display category name
+                                  IconButton(
+                                    icon: Icon(
+                                      Icons.delete,
+                                      color: Colors.red,
+                                      size: 20.sp,
+                                    ),
+                                    onPressed: () {
+                                      showDeleteConfirmation(context, category);
+                                    },
+                                  ),
+                                ],
+                              ),
                             );
                           }).toList(),
                           onChanged: (String? newValue) {
@@ -234,7 +273,7 @@ class AddproductScreen1 extends StatelessWidget {
                           },
                         );
                       }),
-                      10.ph,
+                      15.ph,
                       Row(
                         children: [
                           Text(
@@ -252,42 +291,33 @@ class AddproductScreen1 extends StatelessWidget {
                                 isScrollControlled: true,
                                 backgroundColor: Colors.transparent,
                                 builder: (BuildContext context) {
-                                  return DraggableScrollableSheet(
-                                    expand: false,
-                                    initialChildSize: 0.4,
-                                    minChildSize: 0.3,
-                                    maxChildSize: 0.8,
-                                    builder: (_, controller) {
-                                      return GestureDetector(
-                                        onTap: () {
-                                          FocusScope.of(context).unfocus();
-                                        },
-                                        child: Padding(
-                                          padding: EdgeInsets.only(
-                                            bottom: MediaQuery.of(context)
-                                                .viewInsets
-                                                .bottom,
-                                          ),
-                                          child: Container(
-                                            decoration: BoxDecoration(
-                                              color: Colors.white,
-                                              borderRadius: BorderRadius.only(
-                                                topLeft: Radius.circular(30.r),
-                                                topRight: Radius.circular(30.r),
-                                              ),
-                                            ),
-                                            padding: EdgeInsets.symmetric(
-                                              horizontal: 15.w,
-                                              vertical: 10.h,
-                                            ),
-                                            child: SingleChildScrollView(
-                                              controller: controller,
-                                              child: AddCategoryBottomsheet(),
-                                            ),
+                                  return GestureDetector(
+                                    onTap: () {
+                                      FocusScope.of(context).unfocus();
+                                    },
+                                    child: Padding(
+                                      padding: EdgeInsets.only(
+                                        bottom: MediaQuery.of(context)
+                                            .viewInsets
+                                            .bottom,
+                                      ),
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.only(
+                                            topLeft: Radius.circular(30.r),
+                                            topRight: Radius.circular(30.r),
                                           ),
                                         ),
-                                      );
-                                    },
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: 15.w,
+                                          vertical: 10.h,
+                                        ),
+                                        child: Wrap(children: [
+                                          AddCategoryBottomsheet()
+                                        ]),
+                                      ),
+                                    ),
                                   );
                                 },
                               );
@@ -341,6 +371,8 @@ class AddproductScreen1 extends StatelessWidget {
                       textfield(
                         text: 'Type',
                         toHide: false,
+                        minLines: 1,
+                        maxLines: null,
                         controller: controller.descriptionController,
                         focusNode: controller.descriptionFocusNode,
                         nextFocusNode: controller.colorFocusNode,
@@ -349,7 +381,7 @@ class AddproductScreen1 extends StatelessWidget {
                       15.ph,
                       ColorPickerWidget(controller: controller),
                       15.ph,
-                      SizeSelector(controller: controller),
+                      AddSizeSelector(controller: controller),
                       15.ph,
                       Text(
                         'Minimum Order Quantity',
@@ -422,48 +454,38 @@ class AddproductScreen1 extends StatelessWidget {
                                 isScrollControlled: true,
                                 backgroundColor: Colors.transparent,
                                 builder: (BuildContext context) {
-                                  return DraggableScrollableSheet(
-                                    expand: false,
-                                    initialChildSize: 0.4,
-                                    minChildSize: 0.3,
-                                    maxChildSize: 0.8,
-                                    builder: (_, scrollController) {
-                                      return GestureDetector(
-                                        onTap: () {
-                                          FocusScope.of(context)
-                                              .unfocus(); // Dismiss keyboard on tap outside
-                                        },
-                                        child: Padding(
-                                          padding: EdgeInsets.only(
-                                            bottom: MediaQuery.of(context)
-                                                .viewInsets
-                                                .bottom, // Adjust for keyboard
-                                          ),
-                                          child: Container(
-                                            decoration: BoxDecoration(
-                                              color: Colors.white,
-                                              borderRadius: BorderRadius.only(
-                                                topLeft: Radius.circular(30.r),
-                                                topRight: Radius.circular(30.r),
-                                              ),
-                                            ),
-                                            padding: EdgeInsets.symmetric(
-                                              horizontal: 15.w,
-                                              vertical: 10.h,
-                                            ),
-                                            child: SingleChildScrollView(
-                                              controller: scrollController,
-                                              child: AddSociallinks(
-                                                onAdd: (title, link) {
-                                                  controller.addSocialLink(
-                                                      title, link);
-                                                },
-                                              ),
-                                            ),
+                                  return GestureDetector(
+                                    onTap: () {
+                                      FocusScope.of(context).unfocus();
+                                    },
+                                    child: Padding(
+                                      padding: EdgeInsets.only(
+                                        bottom: MediaQuery.of(context)
+                                            .viewInsets
+                                            .bottom,
+                                      ),
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.only(
+                                            topLeft: Radius.circular(30.r),
+                                            topRight: Radius.circular(30.r),
                                           ),
                                         ),
-                                      );
-                                    },
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: 15.w,
+                                          vertical: 10.h,
+                                        ),
+                                        child: Wrap(children: [
+                                          AddSociallinks(
+                                            onAdd: (title, link) {
+                                              controller.addSocialLink(
+                                                  title, link);
+                                            },
+                                          ),
+                                        ]),
+                                      ),
+                                    ),
                                   );
                                 },
                               );
@@ -476,24 +498,24 @@ class AddproductScreen1 extends StatelessWidget {
                       ),
                       10.ph,
                       Text(
-                        'Phone',
+                        'Bar Code',
                         style: tSStyleBlack16600.copyWith(
                           color: AppColors.primaryColor,
                         ),
                       ),
                       10.ph,
                       textfield(
-                        isNumeric: true,
-                        text: '0305 7878686 33',
+                        isNumeric: false,
+                        text: 'BHK1234GT',
                         toHide: false,
-                        controller: controller.phoneController,
-                        focusNode: controller.phoneFocusNode,
+                        controller: controller.barCodeController,
+                        focusNode: controller.barCodeFocusNode,
                         nextFocusNode: controller.emailFocusNode,
                         errorText: controller.priceErrorText,
                       ),
                       10.ph,
                       Text(
-                        'Email',
+                        'Event',
                         style: tSStyleBlack16600.copyWith(
                           color: AppColors.primaryColor,
                         ),
@@ -502,22 +524,52 @@ class AddproductScreen1 extends StatelessWidget {
                       textfield(
                         text: 'Type',
                         toHide: false,
-                        controller: controller.emailController,
-                        focusNode: controller.emailFocusNode,
-                        nextFocusNode: controller.emailFocusNode,
+                        controller: controller.eventController,
+                        focusNode: controller.eventFocusNode,
+                        nextFocusNode: controller.eventFocusNode,
                         errorText: controller.priceErrorText,
                       ),
+                      10.ph,
+                      Text(
+                        'Event Date',
+                        style: tSStyleBlack16600.copyWith(
+                          color: AppColors.primaryColor,
+                        ),
+                      ),
+                      10.ph,
+                      GestureDetector(
+                        onTap: () => showCalendar(
+                            context,
+                            controller.selectedDate,
+                            controller.eventDateController),
+                        child: AbsorbPointer(
+                          child: textfield(
+                            text: 'Select Date',
+                            toHide: false,
+                            optionalIcon: Icons.calendar_month,
+                            controller: controller.eventDateController,
+                            focusNode: controller.eventDateFocusNode,
+                            nextFocusNode: controller.eventDateFocusNode,
+                          ),
+                        ),
+                      ),
+
                       25.ph,
                       Obx(
                         () => controller.isLoading.value
                             ? Center(
-                                child: CircularProgressIndicator(),
+                                child: CircularProgressIndicator(
+                                  valueColor: AlwaysStoppedAnimation<Color>(Color(
+                                      0xFFE47F46)), // Custom color for the loader
+                                ),
                               )
                             : SizedBox(
                                 height: 58.h,
                                 child: reusedButton(
                                   icon: Icons.arrow_forward_outlined,
-                                  text: 'NEXT',
+                                  text: controller.isLoading.value
+                                      ? 'Loading...'
+                                      : 'NEXT',
                                   ontap: controller.isButtonActive.value
                                       ? () async {
                                           String? productID = await controller
@@ -548,4 +600,82 @@ class AddproductScreen1 extends StatelessWidget {
       ),
     );
   }
+
+  void showDeleteConfirmation(BuildContext context, String category) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Delete Category'),
+        content: Text('Are you sure you want to delete this category?'),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Get.back();
+            },
+            child: Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              categoryController.deleteCategory(category);
+              Get.back();
+              Get.back();
+            },
+            child: Text('Delete', style: TextStyle(color: Colors.red)),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+void showCalendar(BuildContext context, Rx<DateTime> selectedDate,
+    TextEditingController dateController) {
+  showModalBottomSheet(
+    context: context,
+    builder: (_) {
+      return Container(
+        padding: EdgeInsets.all(16),
+        child: TableCalendar(
+          firstDay: DateTime.utc(2020, 10, 16),
+          lastDay: DateTime.utc(2030, 3, 14),
+          focusedDay: selectedDate.value,
+          calendarFormat: CalendarFormat.month,
+          selectedDayPredicate: (day) {
+            return isSameDay(selectedDate.value, day);
+          },
+          onDaySelected: (selectedDay, focusedDay) {
+            selectedDate.value = selectedDay;
+            dateController.text =
+                '${selectedDay.day}/${selectedDay.month}/${selectedDay.year}';
+            Navigator.pop(context);
+          },
+          calendarStyle: CalendarStyle(
+            selectedDecoration: BoxDecoration(
+              color: AppColors.secondary,
+              shape: BoxShape.circle,
+            ),
+            selectedTextStyle: TextStyle(
+              color: Colors.white,
+            ),
+            todayDecoration: BoxDecoration(
+              color: Colors.grey.withOpacity(0.3),
+              shape: BoxShape.circle,
+            ),
+            todayTextStyle: TextStyle(
+              color: Colors.black,
+            ),
+            defaultTextStyle: iStyleBlack13700,
+            weekendTextStyle: iStyleBlack13700,
+            outsideDaysVisible: false,
+          ),
+          headerStyle: HeaderStyle(
+            formatButtonVisible: false,
+            titleCentered: true,
+            leftChevronIcon: Icon(Icons.chevron_left, color: Colors.grey),
+            rightChevronIcon: Icon(Icons.chevron_right, color: Colors.grey),
+          ),
+        ),
+      );
+    },
+  );
 }

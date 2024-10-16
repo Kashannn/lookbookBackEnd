@@ -7,6 +7,7 @@ import 'package:lookbook/extension/sizebox_extension.dart';
 import 'package:shimmer/shimmer.dart';
 
 import '../../controllers/All_profile_screen_controller.dart';
+import '../../utils/components/add_socialLinks.dart';
 import '../../utils/components/constant/app_colors.dart';
 import '../../utils/components/constant/app_images.dart';
 import '../../utils/components/constant/app_textstyle.dart';
@@ -15,7 +16,6 @@ import '../../utils/components/textfield.dart';
 
 class CustomerProfileScreen extends StatefulWidget {
   const CustomerProfileScreen({super.key});
-
   @override
   State<CustomerProfileScreen> createState() => _CustomerProfileScreenState();
 }
@@ -23,13 +23,22 @@ class CustomerProfileScreen extends StatefulWidget {
 class _CustomerProfileScreenState extends State<CustomerProfileScreen> {
   final AllProfileScreenController controller =
       Get.put(AllProfileScreenController());
-
   @override
   Widget build(BuildContext context) {
+    String getInitials(String name) {
+      List<String> nameParts = name.split(' ');
+      if (nameParts.length >= 2) {
+        return nameParts[0][0] + nameParts[1][0];
+      } else if (nameParts.isNotEmpty) {
+        return nameParts[0][0];
+      }
+      return '';
+    }
+
     return SafeArea(
       child: Scaffold(
         body: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16.0.w, vertical: 26.h),
+          padding: EdgeInsets.symmetric(horizontal: 10.0.w, vertical: 26.h),
           child: SingleChildScrollView(
             child: Column(
               children: [
@@ -58,7 +67,7 @@ class _CustomerProfileScreenState extends State<CustomerProfileScreen> {
                         child: Container(
                           decoration: BoxDecoration(
                             color: AppColors.secondary.withOpacity(0.4),
-                            borderRadius: BorderRadius.circular(40.0.r),
+                            borderRadius: BorderRadius.circular(20.0.r),
                           ),
                           child: Padding(
                             padding: EdgeInsets.only(
@@ -67,6 +76,7 @@ class _CustomerProfileScreenState extends State<CustomerProfileScreen> {
                               top: 100.0.h,
                             ),
                             child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 CustomTextField(
                                   text: 'name',
@@ -74,24 +84,57 @@ class _CustomerProfileScreenState extends State<CustomerProfileScreen> {
                                   optionalSvgIcon: AppImages.UpdateProfileIcon,
                                   controller: controller.nameController,
                                 ),
-                                20.ph,
+                                15.ph,
+                                CustomTextField(
+                                  text: 'phone',
+                                  toHide: false,
+                                  optionalSvgIcon: AppImages.UpdateProfileIcon,
+                                  controller: controller.phoneController,
+                                ),
+                                15.ph,
                                 CustomTextField(
                                   text: 'Email',
                                   toHide: false,
                                   optionalSvgIcon: AppImages.UpdateProfileIcon,
                                   controller: controller.emailController,
                                 ),
-                                20.ph,
-                                CustomTextField(
-                                  text: 'Password',
-                                  toHide: false,
-                                  optionalSvgIcon: AppImages.UpdateProfileIcon,
-                                  controller: controller.passwordController,
-                                ),
                                 30.ph,
                                 Obx(() {
                                   return controller.isUpdating.value
-                                      ? CircularProgressIndicator()
+                                      ? SizedBox(
+                                          height: 50,
+                                          child: ElevatedButton(
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor:
+                                                  AppColors.secondary,
+                                              shadowColor: Colors.transparent,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(
+                                                        100.r),
+                                              ),
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                horizontal: 24,
+                                                vertical: 10,
+                                              ),
+                                            ),
+                                            onPressed: null,
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                CircularProgressIndicator(
+                                                  valueColor:
+                                                      AlwaysStoppedAnimation<
+                                                              Color>(
+                                                          Color(
+                                                              0xFFE47F46)), // Custom color for the loader
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        )
                                       : SizedBox(
                                           child: reusedButton2(
                                             text: 'UPDATE',
@@ -108,7 +151,6 @@ class _CustomerProfileScreenState extends State<CustomerProfileScreen> {
                           ),
                         ),
                       ),
-
                       Positioned(
                         top: -45.h,
                         left: MediaQuery.of(context).size.width * 0.5 - 70.w,
@@ -127,24 +169,50 @@ class _CustomerProfileScreenState extends State<CustomerProfileScreen> {
                                     radius: 60.0.r,
                                     backgroundColor:
                                         AppColors.secondary.withOpacity(0.5),
-                                    backgroundImage:
-                                        controller.profileImageUrl != null &&
+                                    child: controller.selectedProfileImage !=
+                                            null
+                                        ? ClipOval(
+                                            child: Image.file(
+                                              controller.selectedProfileImage!,
+                                              fit: BoxFit.cover,
+                                              width: 120.0.w,
+                                              height: 120.0.h,
+                                            ),
+                                          )
+                                        : (controller.profileImageUrl != null &&
                                                 controller
                                                     .profileImageUrl!.isNotEmpty
-                                            ? NetworkImage(
-                                                controller.profileImageUrl!)
-                                            : AssetImage(AppImages.profile)
-                                                as ImageProvider,
-                                    child: controller.profileImageUrl == null ||
-                                            controller.profileImageUrl!.isEmpty
-                                        ? null
-                                        : null,
+                                            ? ClipOval(
+                                                child: Image.network(
+                                                  controller.profileImageUrl!,
+                                                  fit: BoxFit.cover,
+                                                  width: 120.0.w,
+                                                  height: 120.0.h,
+                                                ),
+                                              )
+                                            : Container(
+                                                width: 120.0.w,
+                                                height: 120.0.h,
+                                                decoration: BoxDecoration(
+                                                  color: AppColors.secondary
+                                                      .withOpacity(0.5),
+                                                  shape: BoxShape.circle,
+                                                ),
+                                                child: Center(
+                                                  child: Text(
+                                                    getInitials(controller
+                                                        .nameController.text),
+                                                    style: tSStyleBlack18500
+                                                        .copyWith(
+                                                      color: AppColors.white,
+                                                    ),
+                                                  ),
+                                                ),
+                                              )),
                                   ),
                                 );
                         }),
                       ),
-
-                      // Edit button on the image
                       Positioned(
                         top: 40.h,
                         left: MediaQuery.of(context).size.width * 0.5 + 15.w,

@@ -6,8 +6,11 @@ import 'package:lookbook/controllers/menu_controller.dart';
 import 'package:lookbook/utils/components/constant/app_colors.dart';
 import 'package:lookbook/utils/components/constant/app_textstyle.dart';
 
+import '../../Firebase/firebase_authentication_services.dart';
+
 class DesignerCustomMenu extends StatelessWidget {
-  const DesignerCustomMenu({super.key});
+  DesignerCustomMenu({super.key});
+  final  FirebaseAuthenticationServices _firebaseAuthenticationServices = Get.put(FirebaseAuthenticationServices());
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -45,7 +48,6 @@ class DesignerCustomMenu extends StatelessWidget {
               SizedBox(
                 height: 40.0.h,
               ),
-
               Text(
                 'About Fashion Concierge',
                 style: oStyleBlack18600.copyWith(
@@ -75,14 +77,15 @@ class DesignerCustomMenu extends StatelessWidget {
                   shadowColor: Colors.transparent,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(100.r),
-                    // side: const BorderSide(color: AppColors.white, width: 1.0),
                   ),
                   padding: const EdgeInsets.symmetric(
                     horizontal: 30,
                     vertical: 8,
                   ),
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  _firebaseAuthenticationServices.signOut();
+                },
                 child: Text(
                   'LOGOUT',
                   style: tSStyleBlack14400.copyWith(color: AppColors.white),
@@ -116,7 +119,7 @@ class Menu extends StatelessWidget {
     final CustomMenuController controller = Get.put(CustomMenuController());
 
     return Obx(
-          () => InkWell(
+      () => InkWell(
         onTap: () {
           controller.setSelectedIndex(index);
           onTap();

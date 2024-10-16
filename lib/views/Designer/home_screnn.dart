@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -5,23 +6,51 @@ import 'package:get/get.dart';
 import 'package:lookbook/extension/sizebox_extension.dart';
 import '../../Firebase/firebase_addproduct_services.dart';
 import '../../Model/AddProductModel/add_product_model.dart';
+import '../../Notification/notification.dart';
 import '../../utils/components/constant/app_colors.dart';
 import '../../utils/components/constant/app_images.dart';
 import '../../utils/components/constant/app_textstyle.dart';
 import '../../utils/components/reusable_widget.dart';
 import '../designer/product_detail.dart';
 
-class DesignerHomeScreen extends StatelessWidget {
+class DesignerHomeScreen extends StatefulWidget {
   DesignerHomeScreen({super.key});
+
+  @override
+  State<DesignerHomeScreen> createState() => _DesignerHomeScreenState();
+}
+
+class _DesignerHomeScreenState extends State<DesignerHomeScreen> {
   final FirebaseAddProductServices firebaseAddProductServices =
       FirebaseAddProductServices();
+
+  NotificationService notificationService = NotificationService();
+
+  @override
+  void initState() {
+    super.initState();
+    notificationService.firebaseInit(context);
+    notificationService.isTokenRefresh();
+    notificationService.requestNotificationPermission();
+    notificationService.getToken().then((value) {
+      print('Token: $value');
+    });
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      print(
+          'Received notification: ${message.notification?.title}, ${message.notification?.body}');
+    });
+
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      print('Notification clicked: ${message.notification?.title}');
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
         body: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 19.w),
+          padding: EdgeInsets.symmetric(horizontal: 19.w, vertical: 10.h),
           child: Column(
             children: [
               Center(
@@ -38,15 +67,21 @@ class DesignerHomeScreen extends StatelessWidget {
               ),
               20.ph,
               Expanded(
-                child: FutureBuilder<List<AddProductModel>>(
-                  future: firebaseAddProductServices.fetchProducts(),
+                child: StreamBuilder<List<AddProductModel>>(
+                  stream: firebaseAddProductServices
+                      .fetchProductsStream(), // Updated to use a stream
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return const Center(child: CircularProgressIndicator());
                     } else if (snapshot.hasError) {
                       return Center(child: Text('Error: ${snapshot.error}'));
                     } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                      return const Center(child: Text('No products found.'));
+                      return Center(
+                        child: Text(
+                          'NO PRODUCTS TO SHOW',
+                          style: tSStyleBlack16400,
+                        ),
+                      );
                     } else {
                       final products = snapshot.data!;
                       return GridView.builder(
@@ -84,18 +119,22 @@ class DesignerHomeScreen extends StatelessWidget {
                     }
                   },
                 ),
-              ),
+              )
             ],
           ),
         ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            Get.toNamed('addProduct');
-          },
-          elevation: 8.0,
-          backgroundColor: AppColors.secondary,
-          shape: const CircleBorder(),
-          child: Icon(Icons.add, color: Colors.white, size: 30.sp),
+        floatingActionButton: SizedBox(
+          width: 71.w,
+          height: 71.h,
+          child: FloatingActionButton(
+            onPressed: () {
+              Get.toNamed('addProduct');
+            },
+            elevation: 8.0,
+            backgroundColor: AppColors.secondary,
+            shape: const CircleBorder(),
+            child: Icon(Icons.add, color: Colors.white, size: 40.sp),
+          ),
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       ),

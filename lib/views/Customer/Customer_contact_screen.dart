@@ -207,8 +207,7 @@ class _CustomerContactScreenState extends State<CustomerContactScreen> {
                                         : Colors.grey,
                                     width: 1.0,
                                   ),
-                                  borderRadius: BorderRadius.circular(
-                                      30),
+                                  borderRadius: BorderRadius.circular(30),
                                   color: selectedSizeIndex == index
                                       ? Colors.black
                                       : Colors.transparent,

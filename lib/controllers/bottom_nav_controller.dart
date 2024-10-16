@@ -24,7 +24,7 @@ class DesignerBottomNavController extends GetxController {
   final List<Widget> screens = [
     DesignerHomeScreen(),
     const DesignerAllConversationScreen(),
-    const DesignerNotificationScreen(),
+    // const DesignerNotificationScreen(),
     ProfileScreen()
   ];
 
@@ -40,7 +40,7 @@ class AdminBottomNavController extends GetxController {
   final List<Widget> screens = [
     const AdminDashboardScreen(),
     const AdminAllconversationScreen2(),
-    const AdminNotificationScreen(),
+    AdminNotificationScreen(),
     const AdminProfileScreen(),
   ];
   void changeIndex(int index) {
@@ -54,9 +54,9 @@ class CustomerBottomNavController extends GetxController {
   final PageController pageController = PageController();
 
   final List<Widget> screens = [
-    const CustomerDashboardScreen(), // Index 0: Home
+    CustomerDashboardScreen(), // Index 0: Home
     const CustomerAllConversationScreen(), // Index 1: Messages
-    const CustomerNotificationScreen(), // Index 2: Notifications (corrected)
+    //const CustomerNotificationScreen(), // Index 2: Notifications (corrected)
     const CustomerProfileScreen(), // Index 3: Profile
   ];
 

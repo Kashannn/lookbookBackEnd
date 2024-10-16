@@ -6,22 +6,28 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 
+import '../main.dart';
+import '../utils/components/constant/snackbar.dart';
+
 class AllProfileScreenController extends GetxController {
   final nameController = TextEditingController();
+  final phoneController = TextEditingController();
   final emailController = TextEditingController();
-  final passwordController = TextEditingController();
+  final aboutController = TextEditingController();
+  var socialLinks = <Map<String, String>>[].obs;
+  File? selectedProfileImage;
+
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
   final FirebaseAuth auth = FirebaseAuth.instance;
   final FirebaseStorage storage = FirebaseStorage.instance;
-
   String? userId;
+  String? originalPhone;
   String? originalName;
   String? originalEmail;
-  String? originalPassword;
   String? profileImageUrl;
+  String? originalAbout;
   RxBool isLoading = false.obs;
   RxBool isUpdating = false.obs;
-
   final picker = ImagePicker();
 
   @override
@@ -40,6 +46,11 @@ class AllProfileScreenController extends GetxController {
     }
   }
 
+  // Function to add social links to the list
+  void addSocialLink(String title, String link) {
+    socialLinks.add({'title': title, 'link': link});
+  }
+
   Future<void> fetchUserData() async {
     if (userId != null) {
       isLoading.value = true;
@@ -49,13 +60,20 @@ class AllProfileScreenController extends GetxController {
         if (userSnapshot.exists) {
           var userData = userSnapshot.data() as Map<String, dynamic>;
           nameController.text = userData['fullName'] ?? '';
+          phoneController.text = userData['phone'] ?? '';
           emailController.text = userData['email'] ?? '';
-          passwordController.text = userData['password'] ?? '******';
           profileImageUrl = userData['profileImageUrl'] ?? '';
-
+          aboutController.text = userData['about'] ?? '';
           originalName = userData['fullName'] ?? '';
+          originalPhone = userData['phone'] ?? '';
           originalEmail = userData['email'] ?? '';
-          originalPassword = userData['password'] ?? '******';
+
+          // Fetch social links if they exist
+          List<dynamic>? socialLinksData = userData['socialLinks'];
+          if (socialLinksData != null) {
+            socialLinks.value = List<Map<String, String>>.from(
+                socialLinksData.map((link) => Map<String, String>.from(link)));
+          }
         } else {
           print('User not found');
         }
@@ -67,14 +85,32 @@ class AllProfileScreenController extends GetxController {
     }
   }
 
-  // Function to update user data
+  Future<bool> updateEmail(String newEmail) async {
+    FirebaseAuth auth = FirebaseAuth.instance;
+    User? user = auth.currentUser;
+    try {
+      await user!.verifyBeforeUpdateEmail(newEmail);
+      return true;
+    } catch (e) {
+      CustomSnackBars.instance.showFailureSnackbar(
+        title: 'Error',
+        message: '$e',
+      );
+      return false;
+    }
+  }
+
   Future<void> updateUserData() async {
     if (userId != null) {
       bool hasChanges = false;
       Map<String, dynamic> updatedData = {};
-
       if (nameController.text != originalName) {
         updatedData['fullName'] = nameController.text;
+        hasChanges = true;
+      }
+
+      if (phoneController.text != originalPhone) {
+        updatedData['phone'] = phoneController.text;
         hasChanges = true;
       }
 
@@ -83,27 +119,73 @@ class AllProfileScreenController extends GetxController {
         hasChanges = true;
       }
 
-      if (passwordController.text != originalPassword &&
-          passwordController.text != '******') {
-        updatedData['password'] = passwordController.text;
+      if (aboutController.text.isNotEmpty) {
+        updatedData['about'] = aboutController.text;
         hasChanges = true;
+      }
+
+      if (socialLinks.isNotEmpty) {
+        updatedData['socialLinks'] = socialLinks
+            .map((link) => {'title': link['title'], 'link': link['link']})
+            .toList();
+        hasChanges = true;
+      }
+
+      if (selectedProfileImage != null) {
+        try {
+          TaskSnapshot uploadTask = await storage
+              .ref('profile_images/$userId')
+              .putFile(selectedProfileImage!);
+          String downloadUrl = await uploadTask.ref.getDownloadURL();
+          updatedData['profileImageUrl'] = downloadUrl;
+          hasChanges = true;
+        } catch (e) {
+          CustomSnackBars.instance.showFailureSnackbar(
+            title: 'Error',
+            message: "Error uploading profile picture: $e",
+          );
+        }
       }
 
       if (hasChanges) {
         try {
           isUpdating.value = true;
-          await firestore.collection('users').doc(userId).update(updatedData);
-          Get.snackbar('Success', 'Profile updated successfully',
-              snackPosition: SnackPosition.BOTTOM);
+          if (emailController.text != originalEmail) {
+            User? user = auth.currentUser;
+            if (user != null) {
+              await user.verifyBeforeUpdateEmail(emailController.text);
+              await firestore
+                  .collection('users')
+                  .doc(userId)
+                  .update(updatedData);
+              CustomSnackBars.instance.showSuccessSnackbar(
+                title: 'Email Verification',
+                message:
+                    'A verification email has been sent to ${emailController.text}. Please verify it.',
+              );
+            }
+          } else {
+            await firestore.collection('users').doc(userId).update(updatedData);
+            CustomSnackBars.instance.showSuccessSnackbar(
+              title: 'Success',
+              message: "Profile updated successfully.",
+            );
+          }
+
+          Get.offAll(() => AuthWrapper());
         } catch (e) {
-          Get.snackbar('Error', 'Error updating profile: $e',
-              snackPosition: SnackPosition.BOTTOM);
+          CustomSnackBars.instance.showFailureSnackbar(
+            title: 'Error',
+            message: "Error updating profile: $e",
+          );
         } finally {
           isUpdating.value = false;
         }
       } else {
-        Get.snackbar('No Changes', 'No changes were made',
-            snackPosition: SnackPosition.BOTTOM);
+        CustomSnackBars.instance.showSuccessSnackbar(
+          title: 'No Changes',
+          message: "No changes made.",
+        );
       }
     }
   }
@@ -112,31 +194,11 @@ class AllProfileScreenController extends GetxController {
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
 
     if (pickedFile != null) {
-      File imageFile = File(pickedFile.path);
-
-      try {
-        isUpdating.value = true;
-        TaskSnapshot uploadTask =
-            await storage.ref('profile_images/$userId').putFile(imageFile);
-
-        String downloadUrl = await uploadTask.ref.getDownloadURL();
-        profileImageUrl = downloadUrl;
-        await firestore.collection('users').doc(userId).update({
-          'profileImageUrl': profileImageUrl,
-        });
-
-        Get.snackbar('Success', 'Profile picture updated successfully',
-            snackPosition: SnackPosition.BOTTOM);
-      } catch (e) {
-        Get.snackbar('Error', 'Error uploading profile picture: $e',
-            snackPosition: SnackPosition.BOTTOM);
-      } finally {
-        isUpdating.value = false; // Stop loading indicator
-      }
+      selectedProfileImage = File(pickedFile.path);
+      update();
     }
   }
 
-  // Get initials from full name
   String getInitials(String name) {
     List<String> nameParts = name.split(' ');
     if (nameParts.length >= 2) {
@@ -151,7 +213,8 @@ class AllProfileScreenController extends GetxController {
   void onClose() {
     emailController.dispose();
     nameController.dispose();
-    passwordController.dispose();
+    phoneController.dispose();
+    aboutController.dispose();
     super.onClose();
   }
 }

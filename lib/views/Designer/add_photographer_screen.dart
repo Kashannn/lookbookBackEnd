@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -15,7 +16,6 @@ import '../../utils/components/add_socialLinks.dart';
 import '../../utils/components/constant/app_colors.dart';
 import '../../utils/components/constant/app_images.dart';
 import '../../utils/components/constant/app_textstyle.dart';
-import 'designer_main_screen.dart';
 
 class AddPhotographerScreen extends StatelessWidget {
   final String productId;
@@ -24,10 +24,16 @@ class AddPhotographerScreen extends StatelessWidget {
   final AddPhotographerController controller =
       Get.put(AddPhotographerController());
 
+  final FirebaseFirestore _db = FirebaseFirestore.instance;
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: AppColors.white,
+          title: const CustomAppBar(),
+          automaticallyImplyLeading: false,
+        ),
         body: Padding(
           padding: EdgeInsets.symmetric(
             horizontal: 19.w,
@@ -36,7 +42,6 @@ class AddPhotographerScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const CustomAppBar(),
                 30.ph,
                 Center(
                   child: Text(
@@ -126,6 +131,23 @@ class AddPhotographerScreen extends StatelessWidget {
                   toHide: false,
                   controller: controller.nameController,
                   focusNode: controller.nameFocusNode,
+                  nextFocusNode: controller.aboutFocusNode,
+                ),
+                15.ph,
+                Text(
+                  'About',
+                  style: tSStyleBlack16600.copyWith(
+                    color: AppColors.primaryColor,
+                  ),
+                ),
+                10.ph,
+                textfield(
+                  text: 'About',
+                  toHide: false,
+                  minLines: 1,
+                  maxLines: null,
+                  controller: controller.aboutController,
+                  focusNode: controller.aboutFocusNode,
                   nextFocusNode: controller.socialFocusNode,
                 ),
                 15.ph,
@@ -180,49 +202,36 @@ class AddPhotographerScreen extends StatelessWidget {
                           isScrollControlled: true,
                           backgroundColor: Colors.transparent,
                           builder: (BuildContext context) {
-                            return DraggableScrollableSheet(
-                              expand: false,
-                              initialChildSize: 0.4,
-                              minChildSize: 0.3,
-                              maxChildSize: 0.8,
-                              builder: (_, scrollController) {
-                                return GestureDetector(
-                                  onTap: () {
-                                    FocusScope.of(context)
-                                        .unfocus();
-                                  },
-                                  child: Padding(
-                                    padding: EdgeInsets.only(
-                                      bottom: MediaQuery.of(context)
-                                          .viewInsets
-                                          .bottom,
-                                    ),
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.only(
-                                          topLeft: Radius.circular(30.r),
-                                          topRight: Radius.circular(30.r),
-                                        ),
-                                      ),
-                                      padding: EdgeInsets.symmetric(
-                                        horizontal: 15.w,
-                                        vertical: 10.h,
-                                      ),
-                                      child: SingleChildScrollView(
-                                        controller:
-                                            scrollController, // Enable scrolling with this controller
-                                        child: AddSociallinks(
-                                          onAdd: (title, link) {
-                                            controller.addSocialLink(
-                                                title, link);
-                                          },
-                                        ),
-                                      ),
+                            return GestureDetector(
+                              onTap: () {
+                                FocusScope.of(context).unfocus();
+                              },
+                              child: Padding(
+                                padding: EdgeInsets.only(
+                                  bottom:
+                                      MediaQuery.of(context).viewInsets.bottom,
+                                ),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(30.r),
+                                      topRight: Radius.circular(30.r),
                                     ),
                                   ),
-                                );
-                              },
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 15.w,
+                                    vertical: 10.h,
+                                  ),
+                                  child: Wrap(children: [
+                                    AddSociallinks(
+                                      onAdd: (title, link) {
+                                        controller.addSocialLink(title, link);
+                                      },
+                                    ),
+                                  ]),
+                                ),
+                              ),
                             );
                           },
                         );
@@ -268,39 +277,39 @@ class AddPhotographerScreen extends StatelessWidget {
                 Obx(() {
                   if (controller.isLoading.value) {
                     return Center(
-                      child: CircularProgressIndicator(),
+                      child: CircularProgressIndicator(
+                        valueColor:
+                            AlwaysStoppedAnimation<Color>(Color(0xFFE47F46)),
+                      ),
                     );
                   } else {
                     return controller.isFormComplete.value
                         ? Column(
                             children: [
                               Button(
-                                ontap: () {
+                                ontap: () async {
                                   controller.savePhotographerDetails(productId);
                                 },
-                                text: 'SAVE',
+                                text: controller.isLoading.value
+                                    ? 'Saving...'
+                                    : 'SAVE & PREVIEW',
                                 textcolor: AppColors.white,
                                 bgColor: AppColors.secondary,
                                 borderColor: AppColors.white,
                               ),
                               15.ph,
-                              Button(
-                                ontap: () {
-                                  controller.savePhotographerDetails(productId);
-                                },
-                                text: 'PREVIEW',
-                                textcolor: AppColors.secondary,
-                                bgColor: AppColors.white,
-                                borderColor: AppColors.secondary,
-                              ),
                             ],
                           )
                         : SizedBox(
                             height: 58.h,
                             child: reusedButton(
-                              text: 'NEXT',
-                              ontap: () {},
-                              color: AppColors.greylight,
+                              text: controller.isLoading.value
+                                  ? 'Loading...'
+                                  : 'NEXT', // Show 'Loading...' during loading
+                              ontap: controller.isLoading.value ? null : () {},
+                              color: controller.isLoading.value
+                                  ? AppColors.greylight
+                                  : AppColors.secondary,
                               icon: Icons.arrow_forward_outlined,
                             ),
                           );

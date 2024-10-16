@@ -24,6 +24,16 @@ class _AdminProfileScreenState extends State<AdminProfileScreen> {
       Get.put(AllProfileScreenController());
   @override
   Widget build(BuildContext context) {
+    String getInitials(String name) {
+      List<String> nameParts = name.split(' ');
+      if (nameParts.length >= 2) {
+        return nameParts[0][0] + nameParts[1][0];
+      } else if (nameParts.isNotEmpty) {
+        return nameParts[0][0];
+      }
+      return '';
+    }
+
     return SafeArea(
       child: Scaffold(
         body: Padding(
@@ -74,22 +84,24 @@ class _AdminProfileScreenState extends State<AdminProfileScreen> {
                                 ),
                                 20.ph,
                                 CustomTextField(
+                                  text: 'phone',
+                                  toHide: false,
+                                  optionalSvgIcon: AppImages.UpdateProfileIcon,
+                                  controller: controller.phoneController,
+                                ),
+                                20.ph,
+                                CustomTextField(
                                   text: 'Email',
                                   toHide: false,
                                   optionalSvgIcon: AppImages.UpdateProfileIcon,
                                   controller: controller.emailController,
                                 ),
-                                20.ph,
-                                CustomTextField(
-                                  text: 'Password',
-                                  toHide: false,
-                                  optionalSvgIcon: AppImages.UpdateProfileIcon,
-                                  controller: controller.passwordController,
-                                ),
                                 30.ph,
                                 Obx(() {
                                   return controller.isUpdating.value
-                                      ? CircularProgressIndicator()
+                                      ? CircularProgressIndicator(
+                                          color: AppColors.secondary,
+                                        )
                                       : SizedBox(
                                           child: reusedButton2(
                                             text: 'UPDATE',
@@ -106,7 +118,6 @@ class _AdminProfileScreenState extends State<AdminProfileScreen> {
                           ),
                         ),
                       ),
-
                       Positioned(
                         top: -45.h,
                         left: MediaQuery.of(context).size.width * 0.5 - 70.w,
@@ -125,24 +136,119 @@ class _AdminProfileScreenState extends State<AdminProfileScreen> {
                                     radius: 60.0.r,
                                     backgroundColor:
                                         AppColors.secondary.withOpacity(0.5),
-                                    backgroundImage:
-                                        controller.profileImageUrl != null &&
-                                                controller
-                                                    .profileImageUrl!.isNotEmpty
-                                            ? NetworkImage(
-                                                controller.profileImageUrl!)
-                                            : AssetImage(AppImages.profile)
-                                                as ImageProvider,
-                                    child: controller.profileImageUrl == null ||
-                                            controller.profileImageUrl!.isEmpty
-                                        ? null
-                                        : null,
+                                    child: controller.profileImageUrl != null &&
+                                            controller
+                                                .profileImageUrl!.isNotEmpty
+                                        ? Stack(
+                                            children: [
+                                              // Shimmer effect while the image is loading
+                                              Shimmer.fromColors(
+                                                baseColor: Colors.grey[300]!,
+                                                highlightColor:
+                                                    Colors.grey[100]!,
+                                                child: Container(
+                                                  width: 120.0.w,
+                                                  height: 120.0.h,
+                                                  decoration: BoxDecoration(
+                                                    color: AppColors.secondary
+                                                        .withOpacity(0.5),
+                                                    shape: BoxShape.circle,
+                                                  ),
+                                                ),
+                                              ),
+                                              // Display Network Image
+                                              Positioned.fill(
+                                                child: ClipOval(
+                                                  child: Image.network(
+                                                    controller.profileImageUrl!,
+                                                    fit: BoxFit.cover,
+                                                    width: 120.0.w,
+                                                    height: 120.0.h,
+                                                    loadingBuilder: (BuildContext
+                                                            context,
+                                                        Widget child,
+                                                        ImageChunkEvent?
+                                                            loadingProgress) {
+                                                      if (loadingProgress ==
+                                                          null) return child;
+                                                      return Shimmer.fromColors(
+                                                        baseColor:
+                                                            Colors.grey[300]!,
+                                                        highlightColor:
+                                                            Colors.grey[100]!,
+                                                        child: Container(
+                                                          width: 120.0.w,
+                                                          height: 120.0.h,
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            color: AppColors
+                                                                .secondary
+                                                                .withOpacity(
+                                                                    0.5),
+                                                            shape:
+                                                                BoxShape.circle,
+                                                          ),
+                                                        ),
+                                                      );
+                                                    },
+                                                    errorBuilder: (context,
+                                                        error, stackTrace) {
+                                                      return Container(
+                                                        width: 120.0.w,
+                                                        height: 120.0.h,
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          color: AppColors
+                                                              .secondary
+                                                              .withOpacity(0.5),
+                                                          shape:
+                                                              BoxShape.circle,
+                                                        ),
+                                                        child: Center(
+                                                          child: Text(
+                                                            getInitials(controller
+                                                                    .nameController
+                                                                    .text ??
+                                                                ''),
+                                                            style:
+                                                                tSStyleBlack18500
+                                                                    .copyWith(
+                                                              color: AppColors
+                                                                  .white,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      );
+                                                    },
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          )
+                                        : Container(
+                                            width: 120.0.w,
+                                            height: 120.0.h,
+                                            decoration: BoxDecoration(
+                                              color: AppColors.secondary
+                                                  .withOpacity(0.5),
+                                              shape: BoxShape.circle,
+                                            ),
+                                            child: Center(
+                                              child: Text(
+                                                getInitials(controller
+                                                        .nameController.text ??
+                                                    ''),
+                                                style:
+                                                    tSStyleBlack18500.copyWith(
+                                                  color: AppColors.white,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
                                   ),
                                 );
                         }),
                       ),
-
-                      // Edit button on the image
                       Positioned(
                         top: 40.h,
                         left: MediaQuery.of(context).size.width * 0.5 + 15.w,

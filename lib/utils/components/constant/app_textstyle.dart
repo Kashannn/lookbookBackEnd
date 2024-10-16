@@ -33,6 +33,12 @@ final TextStyle aStyleBlack20800 = TextStyle(
   color: AppColors.primaryColor,
   fontWeight: FontWeight.w800,
 );
+final TextStyle aStyleBlack28800 = TextStyle(
+  fontFamily: 'Agne',
+  fontSize: 20.sp,
+  color: AppColors.primaryColor,
+  fontWeight: FontWeight.w800,
+);
 final TextStyle aStyleBlack14400 = TextStyle(
   fontFamily: 'Agne',
   fontSize: 14.sp,
@@ -94,6 +100,12 @@ final TextStyle tSStyleBlack20500 = GoogleFonts.tenorSans(
 
 final TextStyle tSStyleBlack14400 = GoogleFonts.tenorSans(
   fontSize: 14.sp,
+  color: AppColors.primaryColor,
+  fontWeight: FontWeight.w400,
+);
+final TextStyle tSStyleBlack15400 = TextStyle(
+  fontFamily: 'Inter',
+  fontSize: 15.sp,
   color: AppColors.primaryColor,
   fontWeight: FontWeight.w400,
 );
@@ -200,6 +212,11 @@ final TextStyle iStyleBlack13500 = GoogleFonts.inter(
   fontSize: 13.sp,
   color: AppColors.primaryColor,
   fontWeight: FontWeight.w500,
+);
+final TextStyle iStyleBlack13400 = GoogleFonts.inter(
+  fontSize: 13.sp,
+  color: AppColors.primaryColor,
+  fontWeight: FontWeight.w400,
 );
 final TextStyle iStyleBlack19400 = GoogleFonts.inter(
   fontSize: 19.sp,

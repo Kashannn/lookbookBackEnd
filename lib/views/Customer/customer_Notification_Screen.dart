@@ -6,14 +6,17 @@ import 'package:lookbook/extension/sizebox_extension.dart';
 import '../../utils/components/constant/app_colors.dart';
 import '../../utils/components/constant/app_images.dart';
 import '../../utils/components/constant/app_textstyle.dart';
+
 class CustomerNotificationScreen extends StatefulWidget {
   const CustomerNotificationScreen({super.key});
 
   @override
-  State<CustomerNotificationScreen> createState() => _CustomerNotificationScreenState();
+  State<CustomerNotificationScreen> createState() =>
+      _CustomerNotificationScreenState();
 }
 
-class _CustomerNotificationScreenState extends State<CustomerNotificationScreen> {
+class _CustomerNotificationScreenState
+    extends State<CustomerNotificationScreen> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
